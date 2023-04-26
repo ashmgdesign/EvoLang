@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 // Serve the static files from the public folder
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 // Listen for incoming connections from clients
 io.on('connection', (socket) => {
@@ -25,6 +25,10 @@ io.on('connection', (socket) => {
         console.log('A user has disconnected');
     });
 });
+
+app.get('/', (req, res) => {
+    res.render("index.html")
+})
 
 // Start the server
 server.listen(3000, () => {

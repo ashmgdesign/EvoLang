@@ -1,141 +1,133 @@
-const keyboardContainer = document.querySelector('.image-keyboard');
-
-// Define the image sources and titles for each key
-const keyData = [
-    { src: '/images/t_1-me.png', title: 'me', definition: 'me, I, my' },
-    { src: '/images/t_2-we.png', title: 'we', definition: 'we, us, our' },
-    { src: '/images/t_3-you.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_4-they.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_5-of.png', title: 'of', definition: 'you, your' },
-    { src: '/images/t_6-good.png', title: 'good', definition: 'you, your' },
-    { src: '/images/t_7-bad.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_8-emphasis.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_9-comma.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_10-yes.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_11-no.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_12-place.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_13-full stop.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_14-question mark.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_15-be.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_16-different.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_17-almost.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_18-or.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_19-wait.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_20-ing.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_21-and.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_22-but.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_23-become.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_24-past tense indicator.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_25-less.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_26-more.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_27-exclamation mark.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_28-number.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_29-one.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_30-two.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_31-three.png', title: 'me', definition: 'me, I, my' },
-    { src: '/images/t_32-hand.png', title: 'we', definition: 'we, us, our' },
-    { src: '/images/t_33-do.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_34-have.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_35-to be able to.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_36-use.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_37-say.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_38-give.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_39-love.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_40-feel.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_41-know.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_42-head.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_43-look.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_44-listen.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_45-nose.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_46-mouth.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_47-please.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_48-need.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_49-many.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_50-small.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_51-big.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_52-time.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_53-old.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_54-future.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_55-young.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_56-new.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_57-year.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_58-light.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_59-this.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_60-that.png', title: 'me', definition: 'me, I, my' },
-    { src: '/images/t_61-next to.png', title: 'we', definition: 'we, us, our' },
-    { src: '/images/t_62-centre.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_63-top.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_64-front.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_65-back.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_66-from.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_67-thing.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_68-all or everything.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_69-earth.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_70-room or bedroom.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_71-door.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_72-person.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_73-fire.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_74-cold.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_75-water.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_76-air.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_77-to.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_78-hard object.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_79-plant.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_80-fruit.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_81-food.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_82-carbohydrate food.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_83-animal.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_84-cute.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_85-fish.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_86-bird.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_87-virus.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_88-store.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_89-device.png', title: 'me', definition: 'me, I, my' },
-    { src: '/images/t_90-broken.png', title: 'we', definition: 'we, us, our' },
-    { src: '/images/t_91-electric.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_92-virtual reality.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_93-cord.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_94-red.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_95-yellow.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_96-blue.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_97-white.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_98-colour.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_99-image.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_100-name.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_101-book.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_102-clothing.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_103-skin.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_104-sculpting.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_105-money.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_106-woman.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_107-man.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_108-parent.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_109-dead.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_110-sleep.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_111-night.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_112-unusual.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_113-laugh.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_114-way.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_115-foot.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_116-start.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_117-container.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_118-table.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_119-sex.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_120-difficult.png', title: 'you', definition: 'you, your' },
-    { src: '/images/t_121-strong.png', title: 'you', definition: 'you, your' },
+const keyData = {
+    "0": { src: '/images/t_1-me.png', title: 'me', definition: 'me, I, my', id:'0' },
+    "1": { src: '/images/t_2-we.png', title: 'we', definition: 'we, us, our', id:'1' },
+    "2": { src: '/images/t_3-you.png', title: 'you', definition: 'you, your', id:'2' },
+    "3": { src: '/images/t_4-they.png', title: 'you', definition: 'you, your', id:'3' },
+    "4": { src: '/images/t_5-of.png', title: 'of', definition: 'you, your', id:'4' },
+    "5": { src: '/images/t_6-good.png', title: 'good', definition: 'you, your', id:'5' },
+    "6": { src: '/images/t_7-bad.png', title: 'you', definition: 'you, your', id:'6' },
+    "7": { src: '/images/t_8-emphasis.png', title: 'you', definition: 'you, your', id:'7' },
+    "8": { src: '/images/t_9-comma.png', title: 'you', definition: 'you, your', id:'8' },
+    "9": { src: '/images/t_10-yes.png', title: 'you', definition: 'you, your', id:'9' },
+    "10": { src: '/images/t_11-no.png', title: 'you', definition: 'you, your', id:'10' },
+    "11": { src: '/images/t_12-place.png', title: 'you', definition: 'you, your', id:'11' },
+    "12": { src: '/images/t_13-full stop.png', title: 'you', definition: 'you, your', id:'12' },
+    "13": { src: '/images/t_14-question mark.png', title: 'you', definition: 'you, your', id:'13' },
+    "14": { src: '/images/t_15-be.png', title: 'you', definition: 'you, your', id:'14' },
+    "15": { src: '/images/t_16-different.png', title: 'you', definition: 'you, your', id:'15' },
+    "16": { src: '/images/t_17-almost.png', title: 'you', definition: 'you, your', id:'16' },
+    "17": { src: '/images/t_18-or.png', title: 'you', definition: 'you, your', id:'17' },
+    "18": { src: '/images/t_19-wait.png', title: 'you', definition: 'you, your', id:'18' },
+    "19": { src: '/images/t_20-ing.png', title: 'you', definition: 'you, your', id:'19' },
+    "20": { src: '/images/t_21-and.png', title: 'you', definition: 'you, your', id:'20' }
+};
 
 
-];
+class Site {
+    constructor() {
 
-// Loop through the key data and create a key element for each
-for (let i = 0; i < keyData.length; i++) {
-    const key = document.createElement('div');
-    key.classList.add('image-key');
-   key.setAttribute('title', keyData[i].title); // Set the title attribute for the key
-   key.setAttribute('definition', keyData[i].definition); // Set the definition attribute for the key
-    const img = document.createElement('img');
-    img.setAttribute('src', keyData[i].src);
-    img.setAttribute('alt', keyData[i].title);
-    key.appendChild(img);
-    keyboardContainer.appendChild(key);
+        this.keys;
+        this.ui();
+        this.sio;
+        this.initSockets();
+        this.fetchData()
+        this.createKeyboard();
+
+        this.currentMsg = "";
+
+        this.bindEvents();
+    }
+
+    ui() {
+        this._keyboard = document.querySelector('.keyboard-inner');
+        this._inputField = document.querySelector('.input-field');
+        this._sendField = document.querySelector('.send');
+        this._msgField = document.querySelector('.message-list');
+    }
+
+    initSockets() {
+        this.sio = io.connect();
+        this.sio.on('chat message', function(msg) {
+            this.msgReceived(msg);
+        }.bind(this));
+    }
+
+    fetchData() {
+        //TODO
+        this.keys = keyData;
+        console.log(this.keys)
+    }
+
+    createKeyboard() {
+        for(const key in this.keys) {
+            const k = document.createElement('div');
+            k.classList.add('key');
+            k.setAttribute('data-title', this.keys[key].title); // Set the title attribute for the key
+            k.setAttribute('data-definition', this.keys[key].definition); // Set the definition attribute for the key
+            k.setAttribute('data-id', this.keys[key].id);
+            const img = document.createElement('img');
+            img.setAttribute('src', this.keys[key].src);
+            img.setAttribute('alt', this.keys[key].title);
+            k.appendChild(img);
+            this._keyboard.appendChild(k);
+        }
+    }
+
+    bindEvents() {
+        document.body.addEventListener("click", this.clicked.bind(this), true);
+    }
+
+    clicked(e) {
+        if(e.target.closest(".key")) {
+            e.stopPropagation();
+            const el = e.target.closest(".key");
+            const id = el.getAttribute('data-id');
+            const img = el.querySelector('img');
+            this.type(img, id)
+        } else if(e.target.closest(".send")) {
+            e.stopPropagation();
+            console.log('here')
+            this.sendMsg();
+        }
+    }
+
+    type(img, id) {
+        let new_el = img.cloneNode(true);
+        this._inputField.appendChild(new_el);
+        this.currentMsg += id+',';
+        console.log(this.currentMsg);
+    }
+
+    sendMsg() {
+        this.sio.emit("chat message", this.currentMsg);
+        this.currentMsg = "";
+        this._inputField.innerHTML = "";
+    }
+
+    msgReceived(msg) {
+        console.log(msg);
+        let keys = msg.split(',');
+
+        const msgEl = document.createElement('div');
+        msgEl.classList.add('msg');
+        for(const key of keys) {
+            console.log(key)
+            if(!key) break;
+            console.log(this.keys[key])
+            const k = document.createElement('div');
+            k.classList.add('key');
+            k.setAttribute('data-title', this.keys[key].title); // Set the title attribute for the key
+            k.setAttribute('data-definition', this.keys[key].definition); // Set the definition attribute for the key
+            k.setAttribute('data-id', this.keys[key].id);
+            const img = document.createElement('img');
+            img.setAttribute('src', this.keys[key].src);
+            img.setAttribute('alt', this.keys[key].title);
+            k.appendChild(img);
+            msgEl.appendChild(k);
+        }
+        this._msgField.appendChild(msgEl);
+    }
 }
+
+new Site();
+

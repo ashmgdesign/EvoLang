@@ -1,68 +1,99 @@
-/* CSS for chatroom layout */
+* {
+    box-sizing:border-box;
+}
+
+body, html {
+    margin:0;
+    overflow: hidden;
+}
+
+
 .chat-container {
-    display: flex;
-    height: 100vh;
+    display:flex;
+/*    flex-direction:column;*/
+    background:red;
+    height:100vh;
 }
 
 .chat-sidebar {
-    flex: 0 0 200px;
-    background-color: #f2f2f2;
-    padding: 20px;
+    width:50%;
+    height:100%;
+    background:blue;
 }
 
-.chat-messages {
-    flex: 1;
-    padding: 20px;
+.inputs {
+    display:flex;
+    flex-direction:column;
+    background:green;
+    height:100%;
+    width:50%;
 }
 
-.message-list {
-    list-style-type: none;
-    padding: 0;
+.input {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding:10px 10px;
 }
 
-.message-item {
-    margin-bottom: 10px;
+.input .input-field {
+    width:100%;
+    max-width:500px;
+    height:auto;
+    min-height:50px;
+    background:white;
+    border-radius:1000px;
+    display:flex;
+    align-items:center;
+    justify-content: center;
 }
 
-/* CSS for image keyboard layout */
-.image-keyboard {
-    display: grid;
-    grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(11, 1fr);
-    gap: 5px;
-    height: 100vh;
-    width: 100vw;
+.input .input-field img {
+    width:20px;
+    height:20px;
+    display:inline-block;
 }
 
-.image-key {
-    width: 50px;
-    height: 50px;
-    background-color: #ccc;
-    cursor: pointer;
-    position: relative;
-//    grid-row: auto / span 1;
-//    grid-column: auto / span 1;
+.keyboard {
+    height:100%;
+    width:100%;
+    background:yellow;
+    padding:5px;
 }
 
+.keyboard-inner {
+    display:flex;
+    gap:5px;
+    flex-wrap: wrap;
+    max-width:100%;
+    align-items:center;
+    justify-content: center;
+}
 
+.keyboard-inner .key {
+    max-width:calc(50vw / 11);
+}
 
-    .image-key img {
-        max-width: 100%;
-        max-height: 100%;
-    }
+.keyboard-inner .key img {
+    width:100%;
+    height:auto;
+}
 
-    .image-key .definition {
-        display: none;
-        position: absolute;
-        bottom: -30px;
-        left: 0;
-        width: 100%;
-        background-color: #333;
-        color: #fff;
-        padding: 5px;
-        font-size: 12px;
-    }
+.message-list .msg {
+    padding:5px;
+    border-radius:10px;
+    background:white;
+    max-width:400px;
+    margin-bottom:10px;
+}
 
-    .image-key:hover .definition {
-        display: block;
-    }
+.message-list .msg .key{
+    width:20px;
+    height:20px;
+    display:inline-block;
+}
+
+.message-list .msg .key img {
+    width:100%;
+    height:auto;
+}
