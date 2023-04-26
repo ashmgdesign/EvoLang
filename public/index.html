@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatroom with Image Keyboard</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <h1>Chatroom</h1>
+            <ul class="message-list"></ul>
+        </div>
+        <div class="chat-messages">
+            <div class="image-keyboard" id="keyboard"></div>
+            <div class="definitions" id="definitions"></div>
+            <form>
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </form>
+            <ul class="chat-log" id="chat-log"></ul>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
