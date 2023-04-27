@@ -27,11 +27,12 @@ class Site {
     constructor() {
 
         this.keys;
+        this.lookup = {};
         this.ui();
         this.sio;
         this.initSockets();
         this.fetchData()
-        this.createKeyboard();
+        
 
         this.currentMsg = "";
 
@@ -54,20 +55,39 @@ class Site {
 
     fetchData() {
         //TODO
-        this.keys = keyData;
-        console.log(this.keys)
+        // this.keys = keyData;
+        // console.log(this.keys)
+        // fetch('/fetchKeys')
+        // .then(data => {
+        //     this.keys = data;
+        //     console.log(data);
+        //     this.createKeyboard();
+        // })
+        
+        fetch('/fetchKeys')
+        .then(data => {
+        return data.json();
+        })
+        .then(keys => {
+            this.keys = keys;
+            console.log(this.keys);
+            for(let key=0; key<this.keys.length; key++) {
+                this.lookup[this.keys[key][3]] = this.keys[key][0];
+            }
+            this.createKeyboard();
+        });
     }
 
     createKeyboard() {
-        for(const key in this.keys) {
+        for(let key=0; key<this.keys.length; key++) {
             const k = document.createElement('div');
             k.classList.add('key');
-            k.setAttribute('data-title', this.keys[key].title); // Set the title attribute for the key
-            k.setAttribute('data-definition', this.keys[key].definition); // Set the definition attribute for the key
-            k.setAttribute('data-id', this.keys[key].id);
+            k.setAttribute('data-title', this.keys[key][1]); // Set the title attribute for the key
+            k.setAttribute('data-definition', this.keys[key][2]); // Set the definition attribute for the key
+            k.setAttribute('data-id', this.keys[key][3]);
             const img = document.createElement('img');
-            img.setAttribute('src', this.keys[key].src);
-            img.setAttribute('alt', this.keys[key].title);
+            img.setAttribute('src', this.keys[key][0]);
+            img.setAttribute('alt', this.keys[key][1]);
             k.appendChild(img);
             this._keyboard.appendChild(k);
         }
@@ -111,17 +131,18 @@ class Site {
         const msgEl = document.createElement('div');
         msgEl.classList.add('msg');
         for(const key of keys) {
-            console.log(key)
-            if(!key) break;
-            console.log(this.keys[key])
-            const k = document.createElement('div');
-            k.classList.add('key');
-            k.setAttribute('data-title', this.keys[key].title); // Set the title attribute for the key
-            k.setAttribute('data-definition', this.keys[key].definition); // Set the definition attribute for the key
-            k.setAttribute('data-id', this.keys[key].id);
+        // for(let key=0; key<this.keys.length; key++) {
+        //     console.log(key)
+               if(!key) break;
+        //     console.log(this.keys[key])
+               const k = document.createElement('div');
+               k.classList.add('msg-key');
+            // k.setAttribute('data-title', this.keys[key][1]); // Set the title attribute for the key
+        //     k.setAttribute('data-definition', this.keys[key][2]); // Set the definition attribute for the key
+        //     k.setAttribute('data-id', this.keys[key][3]);
             const img = document.createElement('img');
-            img.setAttribute('src', this.keys[key].src);
-            img.setAttribute('alt', this.keys[key].title);
+            img.setAttribute('src', this.lookup[key]);
+        //     img.setAttribute('alt', this.keys[key][1]);
             k.appendChild(img);
             msgEl.appendChild(k);
         }

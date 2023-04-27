@@ -79,21 +79,27 @@ body, html {
     height:auto;
 }
 
+.message-list {
+    padding:0;
+    margin:10px 0 10px;
+}
+
 .message-list .msg {
     padding:5px;
     border-radius:10px;
     background:white;
-    max-width:400px;
+/*    max-width:400px;*/
     margin-bottom:10px;
+    width:100%;
 }
 
-.message-list .msg .key{
+.message-list .msg .msg-key{
     width:20px;
     height:20px;
     display:inline-block;
 }
 
-.message-list .msg .key img {
+.message-list .msg .msg-key img {
     width:100%;
     height:auto;
 }
