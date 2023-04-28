@@ -34,7 +34,7 @@ class Site {
         this.fetchData()
         
 
-        this.currentMsg = "";
+        this.currentMsg = [];
 
         this.bindEvents();
     }
@@ -42,7 +42,8 @@ class Site {
     ui() {
         this._keyboard = document.querySelector('.keyboard-inner');
         this._inputField = document.querySelector('.input-field');
-        this._sendField = document.querySelector('.send');
+        this._sendBtn = document.querySelector('.send');
+        this._backBtn = document.querySelector('.backspace');
         this._msgField = document.querySelector('.message-list');
     }
 
@@ -108,19 +109,31 @@ class Site {
             e.stopPropagation();
             console.log('here')
             this.sendMsg();
+        } else if(e.target.closest(".backspace")) {
+            e.stopPropagation();
+            console.log('back')
+            this.unType();
         }
     }
 
     type(img, id) {
         let new_el = img.cloneNode(true);
         this._inputField.appendChild(new_el);
-        this.currentMsg += id+',';
+        this.currentMsg.push(id);
+        console.log(this.currentMsg);
+    }
+
+    unType(img, id) {
+        if(!this.currentMsg.length) return;
+
+        this.currentMsg = this.currentMsg.slice(0,-1);
+        this._inputField.removeChild(this._inputField.lastChild);
         console.log(this.currentMsg);
     }
 
     sendMsg() {
-        this.sio.emit("chat message", this.currentMsg);
-        this.currentMsg = "";
+        this.sio.emit("chat message", this.currentMsg.join());
+        this.currentMsg = [];
         this._inputField.innerHTML = "";
     }
 
