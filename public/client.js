@@ -28,6 +28,8 @@ class Site {
 
         this.keys;
         this.lookup = {};
+        this.popular;
+        this.new;
         this.ui();
         this.sio;
         this.initSockets();
@@ -40,7 +42,9 @@ class Site {
     }
 
     ui() {
-        this._keyboard = document.querySelector('.keyboard-inner');
+        this._keyboard = document.querySelector('.keyboard .keyboard-inner');
+        this._popularKeyboard = document.querySelector('.popular-keyboard .keyboard-inner');
+        this._newestKeyboard = document.querySelector('.newest-keyboard .keyboard-inner');
         this._inputField = document.querySelector('.input-field');
         this._sendBtn = document.querySelector('.send');
         this._backBtn = document.querySelector('.backspace');
@@ -54,17 +58,11 @@ class Site {
         }.bind(this));
     }
 
+    popularSort(a,b) {
+        return b[4] - a[4];
+    }
+
     fetchData() {
-        //TODO
-        // this.keys = keyData;
-        // console.log(this.keys)
-        // fetch('/fetchKeys')
-        // .then(data => {
-        //     this.keys = data;
-        //     console.log(data);
-        //     this.createKeyboard();
-        // })
-        
         fetch('/fetchKeys')
         .then(data => {
         return data.json();
@@ -73,24 +71,33 @@ class Site {
             this.keys = keys;
             console.log(this.keys);
             for(let key=0; key<this.keys.length; key++) {
-                this.lookup[this.keys[key][3]] = this.keys[key][0];
+                this.lookup[this.keys[key][3]] = {img: this.keys[key][0], row:key, score:this.keys[key][4]};
             }
-            this.createKeyboard();
+            this.new = this.keys.slice().reverse();
+            this.new = this.new.slice(0,10); // get 10 newest;
+            console.log(this.new);
+            this.popular = this.keys.slice();
+            this.popular.sort(this.popularSort);
+            this.popular = this.popular.slice(0,10); // get top 10;
+            console.log(this.popular);
+            this.createKeyboard(this.popular, this._popularKeyboard);
+            this.createKeyboard(this.new, this._newestKeyboard);
+            this.createKeyboard(this.keys, this._keyboard);
         });
     }
 
-    createKeyboard() {
-        for(let key=0; key<this.keys.length; key++) {
+    createKeyboard(keys, container) {
+        for(let key=0; key<keys.length; key++) {
             const k = document.createElement('div');
             k.classList.add('key');
-            k.setAttribute('data-title', this.keys[key][1]); // Set the title attribute for the key
-            k.setAttribute('data-definition', this.keys[key][2]); // Set the definition attribute for the key
-            k.setAttribute('data-id', this.keys[key][3]);
+            k.setAttribute('data-title', keys[key][1]); // Set the title attribute for the key
+            k.setAttribute('data-definition', keys[key][2]); // Set the definition attribute for the key
+            k.setAttribute('data-id', keys[key][3]);
             const img = document.createElement('img');
-            img.setAttribute('src', this.keys[key][0]);
-            img.setAttribute('alt', this.keys[key][1]);
+            img.setAttribute('src', keys[key][0]);
+            img.setAttribute('alt', keys[key][1]);
             k.appendChild(img);
-            this._keyboard.appendChild(k);
+            container.appendChild(k);
         }
     }
 
@@ -132,6 +139,26 @@ class Site {
     }
 
     sendMsg() {
+
+        // let data = []
+
+        // for(var i=0; i<this.currentMsg.length; i++) {
+        //     let ind = this.currentMsg[i];
+        //     data.push(this.lookup[ind].row)
+        // }
+
+        // console.log(data);
+
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'keys':this.currentMsg}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+
+        fetch('/setData', options)
+
         this.sio.emit("chat message", this.currentMsg.join());
         this.currentMsg = [];
         this._inputField.innerHTML = "";
@@ -140,22 +167,14 @@ class Site {
     msgReceived(msg) {
         console.log(msg);
         let keys = msg.split(',');
-
         const msgEl = document.createElement('div');
         msgEl.classList.add('msg');
         for(const key of keys) {
-        // for(let key=0; key<this.keys.length; key++) {
-        //     console.log(key)
-               if(!key) break;
-        //     console.log(this.keys[key])
-               const k = document.createElement('div');
-               k.classList.add('msg-key');
-            // k.setAttribute('data-title', this.keys[key][1]); // Set the title attribute for the key
-        //     k.setAttribute('data-definition', this.keys[key][2]); // Set the definition attribute for the key
-        //     k.setAttribute('data-id', this.keys[key][3]);
+            if(!key) break;
+            const k = document.createElement('div');
+            k.classList.add('msg-key');
             const img = document.createElement('img');
-            img.setAttribute('src', this.lookup[key]);
-        //     img.setAttribute('alt', this.keys[key][1]);
+            img.setAttribute('src', this.lookup[key].img);
             k.appendChild(img);
             msgEl.appendChild(k);
         }

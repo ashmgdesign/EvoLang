@@ -54,7 +54,7 @@ body, html {
     display:inline-block;
 }
 
-.keyboard {
+.keyboard, .popular-keyboard, .newest-keyboard {
     height:100%;
     width:100%;
     background:yellow;

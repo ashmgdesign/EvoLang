@@ -1,4 +1,5 @@
 const express = require('express');
+var bodyParser = require('body-parser')
 const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
@@ -15,6 +16,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', __dirname + '/public');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json())
+
 
 const {google} = require('googleapis');
 
@@ -47,6 +52,22 @@ app.get('/fetchKeys', async (req, res) => {
     let data = await getSheets();
     console.log(data);
     res.json(data)
+});
+
+app.post('/setData', async (req, res) => {
+  console.log(req.body)
+
+  const inputValues = req.body.keys; // This is a sample input value.
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!${range}` });
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName}!${range}`,
+    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], parseInt(r[4])+1] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
 });
 
 async function getSheets() {
