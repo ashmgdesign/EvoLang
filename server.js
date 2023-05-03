@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
 
     // Listen for incoming chat messages from clients
     socket.on('chat message', (msg) => {
-        console.log(`Message: ${msg}`);
+        console.log(`Message: ${msg.msg}`);
         io.emit('chat message', msg); // Broadcast the message to all connected clients
     });
 
@@ -68,6 +68,7 @@ app.post('/setData', async (req, res) => {
     resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], parseInt(r[4])+1] : r)},
     valueInputOption: "USER_ENTERED",
   });
+  res.sendStatus(200);
 });
 
 async function getSheets() {

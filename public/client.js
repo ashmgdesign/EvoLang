@@ -35,7 +35,7 @@ class Site {
         this.initSockets();
         this.fetchData()
         
-
+        this.user = "Anon"
         this.currentMsg = [];
 
         this.bindEvents();
@@ -49,6 +49,9 @@ class Site {
         this._sendBtn = document.querySelector('.send');
         this._backBtn = document.querySelector('.backspace');
         this._msgField = document.querySelector('.message-list');
+        this._usernameSubmit = document.querySelector('.usernameSubmit');
+        this._username = document.querySelector('.username');
+        this._overlay = document.querySelector('.overlay');
     }
 
     initSockets() {
@@ -120,7 +123,16 @@ class Site {
             e.stopPropagation();
             console.log('back')
             this.unType();
+        } else if(e.target.closest(".usernameSubmit")) {
+            e.stopPropagation();
+            this.user = this._username.value;
+            console.log(this.user);
+            this.closeModal();
         }
+    }
+
+    closeModal() {
+        this._overlay.style.display = 'none';
     }
 
     type(img, id) {
@@ -128,6 +140,11 @@ class Site {
         this._inputField.appendChild(new_el);
         this.currentMsg.push(id);
         console.log(this.currentMsg);
+        const $this = this;
+        setTimeout(function() {
+            $this._inputField.scrollTo(0, $this._inputField.scrollHeight);
+        }, 50)
+        
     }
 
     unType(img, id) {
@@ -136,6 +153,7 @@ class Site {
         this.currentMsg = this.currentMsg.slice(0,-1);
         this._inputField.removeChild(this._inputField.lastChild);
         console.log(this.currentMsg);
+        this._inputField.scrollTo(0, this._inputField.scrollHeight);
     }
 
     sendMsg() {
@@ -157,18 +175,24 @@ class Site {
           },
         };
 
-        fetch('/setData', options)
+        fetch('/setData', options).then((response) => {
+            console.log('success')
+        })
 
-        this.sio.emit("chat message", this.currentMsg.join());
+        this.sio.emit("chat message", {msg: this.currentMsg.join(), user:this.user});
         this.currentMsg = [];
         this._inputField.innerHTML = "";
     }
 
     msgReceived(msg) {
         console.log(msg);
-        let keys = msg.split(',');
+        let keys = msg.msg.split(',');
         const msgEl = document.createElement('div');
         msgEl.classList.add('msg');
+        const userEl = document.createElement('div');
+        userEl.classList.add('user');
+        userEl.innerHTML = msg.user;
+        msgEl.appendChild(userEl);
         for(const key of keys) {
             if(!key) break;
             const k = document.createElement('div');
@@ -179,6 +203,7 @@ class Site {
             msgEl.appendChild(k);
         }
         this._msgField.appendChild(msgEl);
+        this._msgField.scrollTo(0, this._msgField.scrollHeight);
     }
 }
 
