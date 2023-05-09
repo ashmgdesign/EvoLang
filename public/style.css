@@ -11,125 +11,18 @@ body, html {
 .chat-container {
     display:flex;
     background:red;
+    width:100%;
     height:100vh;
-}
-
-.chat-sidebar {
-    width:50%;
-    height:100%;
-    background:blue;
-}
-
-.inputs {
-    display:flex;
-    flex-direction:column;
-    background:green;
-    height:100%;
-    width:50%;
-}
-
-.input {
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    padding:10px 10px;
-}
-
-.input .input-field {
-    width:100%;
-    max-width:500px;
-    height:auto;
-    min-height:50px;
-    background:white;
-    border-radius:1000px;
-    display:flex;
-    align-items:center;
-    justify-content: center;
-}
-
-.input .input-field img {
-    width:20px;
-    height:20px;
-    display:inline-block;
-}
-
-.keyboard, .popular-keyboard, .newest-keyboard {
-    height:100%;
-    width:100%;
-    background:yellow;
-    padding:5px;
-}
-
-.keyboard-inner {
-    display:flex;
-    gap:5px;
-    flex-wrap: wrap;
-    max-width:100%;
-    align-items:center;
-    justify-content: center;
-}
-
-.keyboard-inner .key {
-    max-width:calc(50vw / 11);
-}
-
-.keyboard-inner .key img {
-    width:100%;
-    height:auto;
-}
-
-.message-list {
-    padding:0;
-    margin:10px 0 10px;
-}
-
-.message-list .msg {
-    padding:5px;
-    border-radius:10px;
-    background:white;
-    margin-bottom:10px;
-    width:100%;
-}
-
-.message-list .msg .msg-key{
-    width:20px;
-    height:20px;
-    display:inline-block;
-}
-
-.message-list .msg .msg-key img {
-    width:100%;
-    height:auto;
-}*/
-
-* {
-    box-sizing:border-box;
-}
-
-body, html {
-    margin:0;
-    overflow: hidden;
-}
-
-
-.chat-container {
-    display:flex;
-    background:red;
-    width:100%;
-    max-width:500px;
     margin:0 auto;
-    flex-direction: column;
     box-shadow:0 0 10px rgba(0,0,0,0.14);
 }
 
 .chat-sidebar {
-    height:30vh;
+    height:100vh;
     width:100%;
     background:#aaa;
-/*    padding:5px;*/
     overflow:hidden;
 }
-
 
 
 .message-list {
@@ -137,6 +30,7 @@ body, html {
     margin:0;
     overflow-y: scroll;
     height:100%;
+    width:60%;
 }
 
 
@@ -168,7 +62,7 @@ body, html {
 }
 
 .inputs {
-    height:70vh;
+    height:100vh;
     width:100%;
     display:flex;
     flex-direction: column;
@@ -249,4 +143,152 @@ body, html {
     webkit-appearance:none;
     padding:10px;
     font-size:20px;
+}*/
+
+* {
+    box-sizing: border-box;
+}
+
+.chat-container.container {
+    width:100%;
+    max-width:100%;
+}
+
+
+/* Username stuff  */
+
+.overlay {
+    background:rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position:fixed;
+    z-index:10;
+    height:100vh;
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.overlay .modal {
+    padding:20px;
+    background:white;
+    border-radius:6px;
+    box-shadow:0 0 10px rgba(0,0,0,0.14);
+    display:flex;
+    flex-direction: column;
+}
+
+.overlay .modal .usernameSubmit {
+    margin:0;
+}
+
+/* Message area */
+
+.chat-sidebar {
+    height:100vh;
+}
+
+.message-list {
+    padding:10px;
+    box-shadow: inset 1px 1px 10px 3px rgba(0,0,0,0.08);
+    height:70%;
+    border:solid 1px rgba(0,0,0,0.15);
+    background:#f6f6f6;
+}
+
+.message-list .msg {
+    padding:5px;
+    border-radius:10px;
+    background:white;
+    margin-bottom:10px;
+    width:100%;
+    max-width: fit-content;
+    border:solid 1px rgba(0,0,0,0.15);
+}
+
+.message-list .msg .user {
+    width:100%;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.message-list .msg .msg-key{
+    width:20px;
+    height:20px;
+    display:inline-block;
+}
+
+.message-list .msg .msg-key img {
+    width:100%;
+    height:auto;
+}
+
+/* Left hand side  */
+
+.inputs {
+    padding:10px;
+    display:flex;
+    flex-direction: column;
+    width:100%;
+}
+
+.inputs .input {
+    padding:5px;
+    display: flex;
+    gap:5px;
+   
+    align-items:center;
+}
+
+.inputs .input .button-primary, button {
+    margin:0 !important;
+}
+
+
+.input-field {
+    height:38px;
+    width:100%;
+    margin:0 auto;
+    border-radius:5px;
+    background:white;
+    display:flex;
+    align-items: center;
+    padding:3px 10px;
+    overflow-y:scroll;
+    flex-wrap: wrap;
+    border:solid 1px rgba(0,0,0,0.15);
+}
+
+.inputs .input img {
+    height:28px;
+    pointer-events: none;
+}
+
+.popular-keyboard, .newest-keyboard, .keyboard {
+    padding:5px;
+    width:100%;
+}
+
+.keyboard-inner{
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.keyboard-inner .key{
+    flex:1;
+    height:38px;
+    width:38px;
+    border:solid 1px rgba(0,0,0,0.08);
+    user-select: none;
+    margin:0 2px 2px 0;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    padding:5px;
+    border-radius:3px;
+    flex-grow: 0;
+}
+
+.keyboard-inner .key img {
+    height:100%;
 }
