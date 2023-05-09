@@ -97,7 +97,7 @@ class Site {
             k.setAttribute('data-definition', keys[key][2]); // Set the definition attribute for the key
             k.setAttribute('data-id', keys[key][3]);
             const img = document.createElement('img');
-            img.setAttribute('src', keys[key][0]);
+            img.setAttribute('src', '/images/'+keys[key][0]);
             img.setAttribute('alt', keys[key][1]);
             k.appendChild(img);
             container.appendChild(k);
@@ -198,7 +198,7 @@ class Site {
             const k = document.createElement('div');
             k.classList.add('msg-key');
             const img = document.createElement('img');
-            img.setAttribute('src', this.lookup[key].img);
+            img.setAttribute('src', '/images/'+this.lookup[key].img);
             k.appendChild(img);
             msgEl.appendChild(k);
         }
