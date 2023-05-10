@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>Chatroom with Image Keyboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <link rel="stylesheet" href="normalize.css" />
         <link rel="stylesheet" href="skeleton.css" />
         <link rel="stylesheet" href="style.css" />
@@ -15,53 +17,68 @@
             </div>
         </div>
 
+      
+        <div class="def-overlay">
+            <div class="modal">
+                <div class="definitions-list">
+
+                </div>
+                <input class="defnitionField" type="text" placeholder="Add a new definition">
+                <button class="definitionSubmit button-primary">Submit</button>
+            </div>
+        </div>
+
         <div class="chat-container container">
 
             <div class="row">
-
-                <div class="inputs six columns">
-                    
-                   <!--  <div class="input">
-                        <div class="input-field"></div>
-                        <button class="send button-primary">SEND</button>
-                        <button class="backspace button">BACKSPACE</button>
-                    </div> -->
-
-
-                    <div class="popular-keyboard">
-                        <div>POPULAR</div>
-                        <div class="keyboard-inner">
-                            
-                        </div>
-                    </div>
-
-                    <div class="newest-keyboard">
-                        <div>NEWEST</div>
-                        <div class="keyboard-inner">
-                            
-                        </div>
-                    </div>
-
-
-                    <div class="keyboard">
-                        <div>ALL</div>
-                        <div class="keyboard-inner">
-                            
-                        </div>
-                    </div>
-
-                    
-                </div>
 
                 <div class="chat-sidebar six columns">
                     <ul class="message-list">
                         
                     </ul>
                     <div class="input">
+                        <div class="buttons">
+                            <button class="send button-primary">SEND</button>
+                            <button class="backspace button">BACKSPACE</button>
+                        </div>
                         <div class="input-field"></div>
-                        <button class="send button-primary">SEND</button>
-                        <button class="backspace button">BACKSPACE</button>
+                        
                     </div>
+                </div>
+
+                <div class="inputs six columns">
+
+                    <div class="keyboards">
+
+                        <div class="popular-keyboard">
+                            <div class="label">POPULAR</div>
+                            <div class="keyboard-inner">
+                                
+                            </div>
+                        </div>
+
+                        <div class="newest-keyboard">
+                            <div class="label">NEWEST</div>
+                            <div class="keyboard-inner">
+                                
+                            </div>
+                        </div>
+
+
+                        <div class="keyboard">
+                            <div class="label">ALL</div>
+                            <div class="keyboard-inner">
+                                
+                            </div>
+                        </div>
+
+                        <div class="definitions">
+                            <div class="definition"></div>
+                            <button class="edit button">Change</button>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>

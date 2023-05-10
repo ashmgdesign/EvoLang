@@ -26,7 +26,7 @@ const {google} = require('googleapis');
 const serviceAccountKeyFile = "./utopian-sky-386209-09364afcd939.json";
 const sheetId = '1G8e2yFInBiZUF3sS36y9lgEE3wVJ0SmAEh8oceVsirk'
 const tabName = 'Sheet1'
-const range = 'A:E'
+const range = 'A:I'
 
 // Listen for incoming connections from clients
 io.on('connection', (socket) => {
@@ -65,7 +65,57 @@ app.post('/setData', async (req, res) => {
   await googleSheetClient.spreadsheets.values.update({
     spreadsheetId: sheetId,
     range: `${tabName}!${range}`,
-    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], parseInt(r[4])+1] : r)},
+    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], parseInt(r[4])+1, r[5], r[6],r[7],r[8]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+app.post('/setDef', async (req, res) => {
+  console.log(req.body)
+
+  const inputValues = req.body.keys; // This is a sample input value.
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const thing = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!G:G` });
+
+  let json = JSON.parse(thing.data.values[inputValues][0]);
+
+  json[req.body.user] = 1;
+
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!${range}` });
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName}!${range}`,
+    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], req.body.def, r[3], r[4], r[5], JSON.stringify(json),r[7],r[8]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+app.post('/upvoteDef', async (req, res) => {
+  console.log(req.body)
+
+  const inputValues = req.body.keys; // This is a sample input value.
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const thing = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!G:G` });
+
+  let json = JSON.parse(thing.data.values[inputValues][0]);
+
+  json[req.body.def] = json[req.body.def]+1;
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!${range}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName}!${range}`,
+    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], r[4], r[5], JSON.stringify(json),r[7],r[8]] : r)},
     valueInputOption: "USER_ENTERED",
   });
   res.sendStatus(200);

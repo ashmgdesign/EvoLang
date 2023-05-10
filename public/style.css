@@ -149,10 +149,23 @@ body, html {
     box-sizing: border-box;
 }
 
+body, html {
+    height:100%;
+    min-height:100vh;
+}
+
 .chat-container.container {
     width:100%;
     max-width:100%;
+    height:100%;
+    min-height:100vh;
 }
+
+.chat-container.container .row {
+    height:100%;
+    min-height:100vh;
+}
+
 
 
 /* Username stuff  */
@@ -182,6 +195,8 @@ body, html {
     margin:0;
 }
 
+
+
 /* Message area */
 
 .chat-sidebar {
@@ -195,6 +210,7 @@ body, html {
     height:70%;
     border:solid 1px rgba(0,0,0,0.15);
     background:#f6f6f6;
+    margin-bottom:0;
 }
 
 .message-list .msg {
@@ -205,6 +221,8 @@ body, html {
     width:100%;
     max-width: fit-content;
     border:solid 1px rgba(0,0,0,0.15);
+    pointer-events: none;
+    user-select: none;
 }
 
 .message-list .msg .user {
@@ -214,8 +232,8 @@ body, html {
 }
 
 .message-list .msg .msg-key{
-    width:20px;
-    height:20px;
+    width:26px;
+    height:26px;
     display:inline-block;
 }
 
@@ -225,11 +243,12 @@ body, html {
 }
 
 .input {
-    padding:5px;
+    padding:5px 0;
     display: flex;
     gap:5px;
-   
+    flex-direction: column;
     align-items:center;
+    height:30%;
 }
 
 .input .button-primary, button {
@@ -238,14 +257,13 @@ body, html {
 
 
 .input-field {
-    height:38px;
+    height:100%;
     width:100%;
     margin:0 auto;
     border-radius:5px;
     background:white;
     display:flex;
-    align-items: center;
-    padding:3px 10px;
+    padding:5px;
     overflow-y:scroll;
     flex-wrap: wrap;
     border:solid 1px rgba(0,0,0,0.15);
@@ -263,6 +281,9 @@ body, html {
     display:flex;
     flex-direction: column;
     width:100%;
+    align-items: center;
+/*    justify-content: center;*/
+    height:100%;
 }
 
 .inputs .input {
@@ -271,25 +292,17 @@ body, html {
     gap:5px;
    
     align-items:center;
+    flex-direction: column;
 }
 
 .inputs .input .button-primary, button {
     margin:0 !important;
 }
 
-
-.input-field {
-    height:38px;
-    width:100%;
-    margin:0 auto;
-    border-radius:5px;
-    background:white;
+.input .buttons {
     display:flex;
-    align-items: center;
-    padding:3px 10px;
-    overflow-y:scroll;
-    flex-wrap: wrap;
-    border:solid 1px rgba(0,0,0,0.15);
+    justify-content:space-between;
+    width:100%;
 }
 
 .inputs .input img {
@@ -297,14 +310,28 @@ body, html {
     pointer-events: none;
 }
 
+.keyboards {
+    width:100%;
+}
+
+.label {
+    width:120px;
+}
+
 .popular-keyboard, .newest-keyboard, .keyboard {
     padding:5px;
     width:100%;
+    
+    margin:0 auto;
+    display:flex;
+    
+    gap:10px;
 }
 
 .keyboard-inner{
     display:flex;
     flex-wrap: wrap;
+    max-width:440px;
 }
 
 .keyboard-inner .key{
@@ -325,3 +352,64 @@ body, html {
 .keyboard-inner .key img {
     height:100%;
 }
+
+/* Definition stuff */
+
+.definitions {
+    width:100%;
+/*    height:80px;*/
+    background:white;
+    border:solid 1px rgba(0,0,0,0.08);
+    border-radius:3px;
+    display:flex;
+    align-items:center;
+    padding:5px;
+    display:none;
+    max-width:440px;
+    margin:0 auto;
+    margin-left:130px;
+    margin-top:40px;
+}
+
+.definitions .definition {
+    width:100%;
+    height:100%;
+}
+
+.def-overlay {
+    background:rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position:fixed;
+    z-index:10;
+    height:100vh;
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    display:none;
+}
+
+.def-overlay .modal {
+    padding:20px;
+    background:white;
+    border-radius:6px;
+    box-shadow:0 0 10px rgba(0,0,0,0.14);
+    display:flex;
+    flex-direction: column;
+}
+
+.def-item {
+    width:100%;
+    display:flex;
+    gap:5px;
+    border-bottom:solid 1px rgba(0,0,0,0.18);
+    margin-bottom:5px;
+    padding-bottom:5px;
+}
+
+.definitions-list {
+    margin-bottom:20px;
+    max-height:100px;
+    overflow-y:scroll;
+}
+
