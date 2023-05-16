@@ -82,7 +82,7 @@ app.post('/setDef', async (req, res) => {
 
   let json = JSON.parse(thing.data.values[inputValues][0]);
 
-  json[req.body.user] = 1;
+  json[req.body.user] = 0;
 
 
   const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,

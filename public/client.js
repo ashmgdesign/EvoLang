@@ -152,6 +152,26 @@ class Site {
             this.openEdit();
         } else if(e.target.closest(".definitionSubmit")) {
             e.stopPropagation();
+
+            let newDefText = document.querySelector('.defnitionField').value;
+
+            let newDef = {score:0, text:newDefText}
+
+            this.definitions[this.currentId][this.user] = newDef;
+
+            const defEl = document.createElement('div');
+            defEl.classList.add('def-item');
+            defEl.setAttribute('data-key', this.user);
+            defEl.innerHTML = newDefText;
+
+            // const upEl = document.createElement('div');
+            // upEl.classList.add('def-item-up');
+            // upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+0+'</span>)</a>';
+            // upEl.setAttribute('data-key', this.user);
+            // defEl.appendChild(upEl);
+            this._definitionsList.appendChild(defEl);
+            document.querySelector('.defnitionField').value = "";
+
             this.submitDefinition();
         } else if(e.target.closest('.def-item-up')) {
             e.stopPropagation();
@@ -159,6 +179,9 @@ class Site {
             const key = e.target.closest('.def-item-up').getAttribute('data-key');
             e.target.closest('.def-item-up').innerHTML = 'Score: '+ (parseInt(this.definitions[this.currentId][key].score) + 1);
             this.upvote(key);
+        } else if(e.target.closest('.def-overlay')) {
+            e.stopPropagation();
+            this.closeEdit();
         }
     }
 
@@ -241,7 +264,7 @@ class Site {
 
     closeEdit() {
         this._defOverlay.style.display = 'none';
-        let keys = Object.keys(this.currentDefs);
+        // let keys = Object.keys(this.currentDefs);
         this._definitionsList.innerHTML = "";
     }
 
@@ -293,22 +316,30 @@ class Site {
     }
 
     submitDefinition() {
-        // const $this = this;
+        const $this = this;
         // this.currentDefs[this.user] = document.querySelector('.defnitionField').value;
-        // const options = {
-        //   method: 'POST',
-        //   body: JSON.stringify({'def':JSON.stringify(this.currentDefs), 'keys':[this.currentId], 'user':this.user}),
-        //   headers: {
-        //     'content-type': 'application/json',
-        //   },
-        // };
+        let data = {}
 
-        // fetch('/setDef', options).then((response) => {
-        //     console.log('success')
-        //     $this.closeEdit();
-        // })
+        for(var i=0; i<Object.keys(this.definitions[this.currentId]).length; i++) {
+            let name = Object.keys(this.definitions[this.currentId])[i];
+            let text = this.definitions[this.currentId][name].text;
+            data[name] = text;
+        }
 
-        
+
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'def':JSON.stringify(data), 'keys':[this.currentId], 'user':this.user}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+
+        fetch('/setDef', options).then((response) => {
+            console.log('success')
+            // $this.closeEdit();
+        })
+
     }
 
     msgReceived(msg) {
