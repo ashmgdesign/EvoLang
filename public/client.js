@@ -3,6 +3,7 @@ class Site {
 
         this.keys;
         this.lookup = {};
+        this.definitions = {}
         this.popular;
         this.new;
         this.ui();
@@ -53,23 +54,34 @@ class Site {
         })
         .then(keys => {
             keys.shift();
-            console.log(keys);
             this.keys = keys;
-            console.log(this.keys);
             for(let key=0; key<this.keys.length; key++) {
                 this.lookup[this.keys[key][3]] = {img: this.keys[key][0], row:key, score:this.keys[key][4]};
+                this.definitions[this.keys[key][3]] = {}
+                let defJson = JSON.parse(this.keys[key][2]);
+                let scoreJson = JSON.parse(this.keys[key][6]);
+                for(var i=0; i<Object.keys(defJson).length; i++) {
+                    let name = Object.keys(defJson)[i];
+                    this.definitions[this.keys[key][3]][name] = {
+                        text: defJson[name],
+                        score: scoreJson[name] ? scoreJson[name] : 0
+                    }
+                }
             }
+            console.log(this.definitions);
             this.new = this.keys.slice().reverse();
             this.new = this.new.slice(0,11); // get 10 newest;
-            console.log(this.new);
             this.popular = this.keys.slice();
             this.popular.sort(this.popularSort);
             this.popular = this.popular.slice(0,11); // get top 10;
-            console.log(this.popular);
             this.createKeyboard(this.popular, this._popularKeyboard);
             this.createKeyboard(this.new, this._newestKeyboard);
             this.createKeyboard(this.keys, this._keyboard);
         });
+    }
+
+    sortDefinitions() {
+
     }
 
     createKeyboard(keys, container) {
@@ -78,9 +90,18 @@ class Site {
             k.classList.add('key');
             k.setAttribute('data-title', keys[key][1]); // Set the title attribute for the key
             let def = null
-            if(keys[key][2]) {
-                console.log(keys[key][2])
-                def = JSON.stringify(JSON.parse(keys[key][2]));
+            let score = 0;
+            // if(keys[key][2]) {
+            //     def = JSON.stringify(JSON.parse(keys[key][2]));
+            // }
+
+            for(var i=0; i<Object.keys(this.definitions[keys[key][3]]).length; i++) {
+                let name = Object.keys(this.definitions[keys[key][3]])[i];
+                console.log(this.definitions[keys[key][3]][name])
+                if(this.definitions[keys[key][3]][name].score > score) {
+                    def = this.definitions[keys[key][3]][name].text;
+                    score = this.definitions[keys[key][3]][name].score;
+                }
             }
 
             k.setAttribute('data-definition', def); // Set the definition attribute for the key
@@ -105,15 +126,15 @@ class Site {
             const id = el.getAttribute('data-id');
             const img = el.querySelector('img');
             const def = el.getAttribute('data-definition');
-            let def2 = "Undefined";
-            if(def != "null") {
-                let json = JSON.parse(def);
-                this.currentDefs = json;
-                this.currentId = id;
-                def2 = json[Object.keys(json)[0]]
-                console.log(def2);
-            }
-            this.type(img, id, def2)
+            // let def2 = "Undefined";
+            // if(def != "null") {
+            //     let json = JSON.parse(def);
+            //     this.currentDefs = json;
+            //     this.currentId = id;
+            //     def2 = json[Object.keys(json)[0]]
+            //     console.log(def2);
+            // }
+            this.type(img, id, def)
         } else if(e.target.closest(".send")) {
             e.stopPropagation();
             console.log('here')
@@ -124,7 +145,6 @@ class Site {
             this.unType();
         } else if(e.target.closest(".usernameSubmit")) {
             e.stopPropagation();
-            
             this.closeModal();
         } else if(e.target.closest(".edit")) {
             e.stopPropagation();
