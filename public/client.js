@@ -12,6 +12,7 @@ class Site {
         this.fetchData()
         
         this.user = "Anon"
+        this.username = "Anon"
         this.currentMsg = [];
         this.currentDefs;
         this.currentId;
@@ -29,6 +30,7 @@ class Site {
         this._msgField = document.querySelector('.message-list');
         this._usernameSubmit = document.querySelector('.usernameSubmit');
         this._username = document.querySelector('.username');
+        this._email = document.querySelector('.email');
         this._overlay = document.querySelector('.overlay');
         this._defOverlay = document.querySelector('.def-overlay');
         this._definition = document.querySelector('.definition');
@@ -187,17 +189,36 @@ class Site {
             this.upvote(key);
         } else if(e.target.closest('.def-overlay')) {
             e.stopPropagation();
-            this.closeEdit();
+            // this.closeEdit();
         }
     }
 
     
 
     closeModal() {
-        if(this._username.value == "") return;
-        this.user = this._username.value;
-        console.log(this.user);
+        if(this._username.value == "" || this._email.value == "") return;
+
+        if(!this.validateEmail(this._email)) return;
+
+        this.user = this._email.value;
+        this.username = this._username.value;
+        console.log(this.user, this.username);
         this._overlay.style.display = 'none';
+    }
+
+    validateEmail(input) {
+
+      var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+      if (input.value.match(validRegex)) {
+
+        return true;
+
+      } else {
+        return false;
+
+      }
+
     }
 
     upvote(key) {
@@ -339,7 +360,7 @@ class Site {
             console.log('success')
         })
 
-        this.sio.emit("chat message", {msg: this.currentMsg.join(), user:this.user});
+        this.sio.emit("chat message", {msg: this.currentMsg.join(), user:this.username});
         this.currentMsg = [];
         this._inputField.innerHTML = "";
         this._definitionWrapper.style.display = 'none';
