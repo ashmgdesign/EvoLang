@@ -122,10 +122,12 @@ class Site {
     clicked(e) {
         if(e.target.closest(".key")) {
             e.stopPropagation();
+            if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
             const el = e.target.closest(".key");
             const id = el.getAttribute('data-id');
             const img = el.querySelector('img');
             const def = el.getAttribute('data-definition');
+            e.target.closest(".key").classList.add('highlight');
             // let def2 = "Undefined";
             // if(def != "null") {
             //     let json = JSON.parse(def);
@@ -140,10 +142,12 @@ class Site {
             e.stopPropagation();
             console.log('here')
             this.sendMsg();
+            if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
         } else if(e.target.closest(".backspace")) {
             e.stopPropagation();
             console.log('back')
             this.unType();
+            if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
         } else if(e.target.closest(".usernameSubmit")) {
             e.stopPropagation();
             this.closeModal();
@@ -178,6 +182,7 @@ class Site {
             
             const key = e.target.closest('.def-item-up').getAttribute('data-key');
             e.target.closest('.def-item-up').innerHTML = 'Score: '+ (parseInt(this.definitions[this.currentId][key].score) + 1);
+            
             this.upvote(key);
         } else if(e.target.closest('.def-overlay')) {
             e.stopPropagation();
@@ -205,6 +210,31 @@ class Site {
           },
         };
         this.definitions[this.currentId][key].score++;
+
+        let def = null
+        let score = 0;
+
+        for(var i=0; i<Object.keys(this.definitions[this.currentId]).length; i++) {
+            let name = Object.keys(this.definitions[this.currentId])[i];
+            if(this.definitions[this.currentId][name].score > score) {
+                def = this.definitions[this.currentId][name].text;
+                score = this.definitions[this.currentId][name].score;
+                // console.log(score);
+            }
+        }
+
+        // console.log(document.querySelector('.key[data-id="'+this.currentId+'"]'));
+        if(document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"')) {
+            document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        }
+        if(document.querySelector('.newest-keyboard .key[data-id="'+this.currentId+'"')) {
+            document.querySelector('.newest-keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        }
+        document.querySelector('.keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        this._definition.innerHTML = def;
+
+        // console.log(document.querySelector('.key[data-id="'+this.currentId+'"]'));
+        // console.log(this.definitions[this.currentId])
 
         fetch('/upvoteDef', options).then((response) => {
             console.log('success')
