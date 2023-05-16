@@ -280,3 +280,21 @@ body, html {
     overflow-y:scroll;
 }
 
+.def-overlay .header {
+    display:flex;
+    margin-bottom:10px;
+    justify-content: space-between;
+    gap:20px;
+    width:100%;
+    align-items: start;
+}
+
+.def-overlay .header .close {
+    font-weight: bold;
+    cursor:pointer;
+    transition:all 0.2s;
+}
+
+.def-overlay .header .close:hover {
+    opacity:0.8;
+}

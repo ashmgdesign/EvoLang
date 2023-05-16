@@ -187,9 +187,9 @@ class Site {
             e.target.closest('.def-item-up').innerHTML = 'Score: '+ (parseInt(this.definitions[this.currentId][key].score) + 1);
             
             this.upvote(key);
-        } else if(e.target.closest('.def-overlay')) {
+        } else if(e.target.closest('.def-overlay .close')) {
             e.stopPropagation();
-            // this.closeEdit();
+            this.closeEdit();
         }
     }
 
