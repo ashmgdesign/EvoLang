@@ -134,6 +134,7 @@ class Site {
             //     def2 = json[Object.keys(json)[0]]
             //     console.log(def2);
             // }
+            this.currentId = id;
             this.type(img, id, def)
         } else if(e.target.closest(".send")) {
             e.stopPropagation();
@@ -185,21 +186,51 @@ class Site {
         })
     }
 
+    // openEdit() {
+        // this._defOverlay.style.display = 'flex';
+        // let keys = Object.keys(this.currentDefs);
+        // let scores = JSON.parse(this.keys[this.currentId-1][6]);
+        // console.log(scores)
+        // for(let key of keys) {
+        //     const defEl = document.createElement('div');
+        //     defEl.classList.add('def-item');
+        //     defEl.setAttribute('data-key', key);
+        //     defEl.innerHTML = this.currentDefs[key];
+
+        //     const upEl = document.createElement('div');
+        //     upEl.classList.add('def-item-up');
+        //     upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+scores[key]+'</span>)</a>';
+        //     upEl.setAttribute('data-key', key);
+        //     defEl.appendChild(upEl);
+        //     this._definitionsList.appendChild(defEl);
+        // }
+    // }
+
     openEdit() {
         this._defOverlay.style.display = 'flex';
-        let keys = Object.keys(this.currentDefs);
-        let scores = JSON.parse(this.keys[this.currentId-1][6]);
-        console.log(scores)
-        for(let key of keys) {
+        let definitions = [];
+
+        for(var i=0; i<Object.keys(this.definitions[this.currentId]).length; i++) {
+            let name = Object.keys(this.definitions[this.currentId])[i];
+            let score = this.definitions[this.currentId][name].score;
+            let text = this.definitions[this.currentId][name].text;
+            definitions.push({name, score, text});
+        }
+
+        definitions.sort(function (a, b) {
+            return b.score - a.score
+        });
+
+        for(let d of definitions) {
             const defEl = document.createElement('div');
             defEl.classList.add('def-item');
-            defEl.setAttribute('data-key', key);
-            defEl.innerHTML = this.currentDefs[key];
+            defEl.setAttribute('data-key', d.name);
+            defEl.innerHTML = d.text;
 
             const upEl = document.createElement('div');
             upEl.classList.add('def-item-up');
-            upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+scores[key]+'</span>)</a>';
-            upEl.setAttribute('data-key', key);
+            upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+d.score+'</span>)</a>';
+            upEl.setAttribute('data-key', d.name);
             defEl.appendChild(upEl);
             this._definitionsList.appendChild(defEl);
         }
@@ -259,20 +290,20 @@ class Site {
     }
 
     submitDefinition() {
-        const $this = this;
-        this.currentDefs[this.user] = document.querySelector('.defnitionField').value;
-        const options = {
-          method: 'POST',
-          body: JSON.stringify({'def':JSON.stringify(this.currentDefs), 'keys':[this.currentId], 'user':this.user}),
-          headers: {
-            'content-type': 'application/json',
-          },
-        };
+        // const $this = this;
+        // this.currentDefs[this.user] = document.querySelector('.defnitionField').value;
+        // const options = {
+        //   method: 'POST',
+        //   body: JSON.stringify({'def':JSON.stringify(this.currentDefs), 'keys':[this.currentId], 'user':this.user}),
+        //   headers: {
+        //     'content-type': 'application/json',
+        //   },
+        // };
 
-        fetch('/setDef', options).then((response) => {
-            console.log('success')
-            $this.closeEdit();
-        })
+        // fetch('/setDef', options).then((response) => {
+        //     console.log('success')
+        //     $this.closeEdit();
+        // })
 
         
     }
