@@ -168,11 +168,19 @@ body, html {
 }
 
 .label {
-    width:120px;
+    width:70px;
+    display:flex;
+    align-items: start;
+    justify-content: end;
+    padding-top:5px;
+}
+
+.label img {
+    max-width:30px;
 }
 
 .popular-keyboard, .newest-keyboard, .keyboard {
-    padding:5px;
+    padding:10px 5px;
     width:100%;
     
     margin:0 auto;
@@ -221,11 +229,11 @@ body, html {
     border-radius:3px;
     display:flex;
     align-items:center;
-    padding:5px;
+    padding:10px;
     display:none;
     max-width:440px;
     margin:0 auto;
-    margin-left:130px;
+    margin-left:85px;
     margin-top:40px;
     gap:10px;
 }

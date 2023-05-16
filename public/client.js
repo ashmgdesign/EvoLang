@@ -158,6 +158,7 @@ class Site {
             e.stopPropagation();
 
             let newDefText = document.querySelector('.defnitionField').value;
+            if (newDefText == "") return;
 
             let newDef = {score:0, text:newDefText}
 
