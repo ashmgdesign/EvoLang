@@ -155,7 +155,9 @@ class Site {
             this.submitDefinition();
         } else if(e.target.closest('.def-item-up')) {
             e.stopPropagation();
+            
             const key = e.target.closest('.def-item-up').getAttribute('data-key');
+            e.target.closest('.def-item-up').innerHTML = 'Score: '+ (parseInt(this.definitions[this.currentId][key].score) + 1);
             this.upvote(key);
         }
     }
@@ -179,10 +181,11 @@ class Site {
             'content-type': 'application/json',
           },
         };
+        this.definitions[this.currentId][key].score++;
 
         fetch('/upvoteDef', options).then((response) => {
             console.log('success')
-            this.closeEdit();
+            // this.closeEdit();
         })
     }
 
