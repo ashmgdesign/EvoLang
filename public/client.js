@@ -34,7 +34,7 @@ class Site {
         this._overlay = document.querySelector('.overlay');
         this._defOverlay = document.querySelector('.def-overlay');
         this._definition = document.querySelector('.definition');
-        this._definitionWrapper = document.querySelector('.definitions');
+        this._definitionWrapper = document.querySelector('.def-inner-content');
         this._definitionsList = document.querySelector('.definitions-list');
     }
 
