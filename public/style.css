@@ -130,7 +130,7 @@ body, html {
 /* Left hand side  */
 
 .inputs {
-    padding:10px;
+    padding:10px 0px;
     display:flex;
     flex-direction: column;
     width:100%;
@@ -167,7 +167,7 @@ body, html {
 }
 
 .label {
-    width:70px;
+/*    width:70px;*/
     display:flex;
     align-items: start;
     justify-content: end;
@@ -179,7 +179,7 @@ body, html {
 }
 
 .popular-keyboard, .newest-keyboard, .keyboard {
-    padding:10px 5px;
+    padding:10px 0px;
     width:100%;
     
     margin:0 auto;
@@ -225,7 +225,7 @@ body, html {
     background:white;
     display:flex;
     align-items:center;
-    padding:10px 5px;
+    padding:10px 0px;
     margin-top:40px;
     gap:10px;
 }
@@ -333,4 +333,38 @@ body, html {
 .score {
     font-size:10px;
     font-weight:bold;
+}
+
+/* upload stuff */
+
+/* Username stuff  */
+
+.upload-overlay {
+    background:rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position:fixed;
+    z-index:10;
+    height:100vh;
+    width:100%;
+    display:none;
+    align-items: center;
+    justify-content:center;
+}
+
+.upload-overlay .modal {
+    padding:20px;
+    background:white;
+    border-radius:6px;
+    box-shadow:0 0 10px rgba(0,0,0,0.14);
+    display:flex;
+    flex-direction: column;
+}
+
+.upload-btn {
+    width:28px;
+    height:auto;
+}
+
+.upload-wrapper {
+    padding-top:20px;
 }
