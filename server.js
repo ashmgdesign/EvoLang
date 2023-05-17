@@ -121,6 +121,31 @@ app.post('/upvoteDef', async (req, res) => {
   res.sendStatus(200);
 });
 
+app.post('/downvoteDef', async (req, res) => {
+  console.log(req.body)
+
+  const inputValues = req.body.keys; // This is a sample input value.
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const thing = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!G:G` });
+
+  let json = JSON.parse(thing.data.values[inputValues][0]);
+
+  json[req.body.def] = (json[req.body.def]-1 < 0) ? 0 : json[req.body.def]-1;
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName}!${range}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName}!${range}`,
+    resource: {values: values.map((r) => inputValues.includes(r[3]) ? [r[0], r[1], r[2], r[3], r[4], r[5], JSON.stringify(json),r[7],r[8]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
 async function getSheets() {
   // Generating google sheet client
   const googleSheetClient = await _getGoogleSheetClient();

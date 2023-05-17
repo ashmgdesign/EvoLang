@@ -158,35 +158,33 @@ class Site {
             this.openEdit();
         } else if(e.target.closest(".definitionSubmit")) {
             e.stopPropagation();
-
             let newDefText = document.querySelector('.defnitionField').value;
             if (newDefText == "") return;
-
             let newDef = {score:0, text:newDefText}
-
             this.definitions[this.currentId][this.user] = newDef;
-
             const defEl = document.createElement('div');
             defEl.classList.add('def-item');
             defEl.setAttribute('data-key', this.user);
             defEl.innerHTML = newDefText;
-
-            // const upEl = document.createElement('div');
-            // upEl.classList.add('def-item-up');
-            // upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+0+'</span>)</a>';
-            // upEl.setAttribute('data-key', this.user);
-            // defEl.appendChild(upEl);
             this._definitionsList.appendChild(defEl);
             document.querySelector('.defnitionField').value = "";
-
             this.submitDefinition();
-        } else if(e.target.closest('.def-item-up')) {
+        } else if(e.target.closest('.def-item-up .upvote')) {
             e.stopPropagation();
             
             const key = e.target.closest('.def-item-up').getAttribute('data-key');
-            e.target.closest('.def-item-up').innerHTML = 'Score: '+ (parseInt(this.definitions[this.currentId][key].score) + 1);
+            let score = (parseInt(this.definitions[this.currentId][key].score) + 1);
+            e.target.closest('.def-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
             
             this.upvote(key);
+        } else if(e.target.closest('.def-item-up .downvote')) {
+            e.stopPropagation();
+            
+            const key = e.target.closest('.def-item-up').getAttribute('data-key');
+            let score = (parseInt(this.definitions[this.currentId][key].score) - 1) < 0 ? 0 : parseInt(this.definitions[this.currentId][key].score) - 1;
+            e.target.closest('.def-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
+            
+            this.downvote(key);
         } else if(e.target.closest('.def-overlay .close')) {
             e.stopPropagation();
             this.closeEdit();
@@ -232,10 +230,8 @@ class Site {
           },
         };
         this.definitions[this.currentId][key].score++;
-
         let def = null
         let score = 0;
-
         for(var i=0; i<Object.keys(this.definitions[this.currentId]).length; i++) {
             let name = Object.keys(this.definitions[this.currentId])[i];
             if(this.definitions[this.currentId][name].score > score) {
@@ -244,8 +240,6 @@ class Site {
                 // console.log(score);
             }
         }
-
-        // console.log(document.querySelector('.key[data-id="'+this.currentId+'"]'));
         if(document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"')) {
             document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
         }
@@ -254,35 +248,47 @@ class Site {
         }
         document.querySelector('.keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
         this._definition.innerHTML = def;
-
-        // console.log(document.querySelector('.key[data-id="'+this.currentId+'"]'));
-        // console.log(this.definitions[this.currentId])
-
         fetch('/upvoteDef', options).then((response) => {
             console.log('success')
-            // this.closeEdit();
         })
+
     }
 
-    // openEdit() {
-        // this._defOverlay.style.display = 'flex';
-        // let keys = Object.keys(this.currentDefs);
-        // let scores = JSON.parse(this.keys[this.currentId-1][6]);
-        // console.log(scores)
-        // for(let key of keys) {
-        //     const defEl = document.createElement('div');
-        //     defEl.classList.add('def-item');
-        //     defEl.setAttribute('data-key', key);
-        //     defEl.innerHTML = this.currentDefs[key];
+    downvote(key) {
 
-        //     const upEl = document.createElement('div');
-        //     upEl.classList.add('def-item-up');
-        //     upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+scores[key]+'</span>)</a>';
-        //     upEl.setAttribute('data-key', key);
-        //     defEl.appendChild(upEl);
-        //     this._definitionsList.appendChild(defEl);
-        // }
-    // }
+        const $this = this;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'keys':[this.currentId], 'def':key}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        this.definitions[this.currentId][key].score = (this.definitions[this.currentId][key].score - 1) < 0 ? 0 : this.definitions[this.currentId][key].score - 1;
+        let def = null
+        let score = 0;
+        for(var i=0; i<Object.keys(this.definitions[this.currentId]).length; i++) {
+            let name = Object.keys(this.definitions[this.currentId])[i];
+            if(this.definitions[this.currentId][name].score > score) {
+                def = this.definitions[this.currentId][name].text;
+                score = this.definitions[this.currentId][name].score;
+                // console.log(score);
+            }
+        }
+        if(document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"')) {
+            document.querySelector('.popular-keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        }
+        if(document.querySelector('.newest-keyboard .key[data-id="'+this.currentId+'"')) {
+            document.querySelector('.newest-keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        }
+        document.querySelector('.keyboard .key[data-id="'+this.currentId+'"').setAttribute('data-definition', def);
+        this._definition.innerHTML = def;
+        fetch('/downvoteDef', options).then((response) => {
+            console.log('success')
+        })
+        
+    }
+
 
     openEdit() {
         this._defOverlay.style.display = 'flex';
@@ -307,9 +313,9 @@ class Site {
 
             const upEl = document.createElement('div');
             upEl.classList.add('def-item-up');
-            upEl.innerHTML = '<a href="#" class="upvote">Upvote (<span>'+d.score+'</span>)</a>';
+            upEl.innerHTML = '<div class="vote-icon"><a href="#" class="upvote"><img src="assets/upvote.svg"></a></div><div class="score">'+d.score+'</div><div class="vote-icon"><a href="#" class="downvote"><img src="assets/downvote.svg"></a></div>';
             upEl.setAttribute('data-key', d.name);
-            defEl.appendChild(upEl);
+            defEl.prepend(upEl);
             this._definitionsList.appendChild(defEl);
         }
     }
