@@ -36,6 +36,7 @@ class Site {
         this._definition = document.querySelector('.definition');
         this._definitionWrapper = document.querySelector('.def-inner-content');
         this._definitionsList = document.querySelector('.definitions-list');
+        this._uploadOverlay = document.querySelector('.upload-overlay');
     }
 
     initSockets() {
@@ -130,14 +131,6 @@ class Site {
             const img = el.querySelector('img');
             const def = el.getAttribute('data-definition');
             e.target.closest(".key").classList.add('highlight');
-            // let def2 = "Undefined";
-            // if(def != "null") {
-            //     let json = JSON.parse(def);
-            //     this.currentDefs = json;
-            //     this.currentId = id;
-            //     def2 = json[Object.keys(json)[0]]
-            //     console.log(def2);
-            // }
             this.currentId = id;
             this.type(img, id, def)
         } else if(e.target.closest(".send")) {
@@ -188,6 +181,8 @@ class Site {
         } else if(e.target.closest('.def-overlay .close')) {
             e.stopPropagation();
             this.closeEdit();
+        } else if(e.target.closest('.upload-btn')) {
+            this._uploadOverlay.style.display = 'flex';
         }
     }
 

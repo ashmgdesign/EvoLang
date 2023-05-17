@@ -358,6 +358,7 @@ body, html {
     box-shadow:0 0 10px rgba(0,0,0,0.14);
     display:flex;
     flex-direction: column;
+    min-width:600px;
 }
 
 .upload-btn {
