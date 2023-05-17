@@ -181,6 +181,9 @@ class Site {
         } else if(e.target.closest('.def-overlay .close')) {
             e.stopPropagation();
             this.closeEdit();
+        } else if(e.target.closest('.upload-overlay .close-upload')) {
+            e.stopPropagation();
+            this._uploadOverlay.style.display = 'none';
         } else if(e.target.closest('.upload-btn')) {
             this._uploadOverlay.style.display = 'flex';
         }
@@ -198,6 +201,8 @@ class Site {
         console.log(this.user, this.username);
         this._overlay.style.display = 'none';
     }
+
+
 
     validateEmail(input) {
 

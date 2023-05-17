@@ -369,3 +369,22 @@ body, html {
 .upload-wrapper {
     padding-top:20px;
 }
+
+.upload-overlay .header {
+    display:flex;
+    margin-bottom:10px;
+    justify-content: end;
+    gap:20px;
+    width:100%;
+    align-items: start;
+}
+
+.upload-overlay .header .close-upload {
+    font-weight: bold;
+    cursor:pointer;
+    transition:all 0.2s;
+}
+
+.upload-overlay .header .close-upload:hover {
+    opacity:0.8;
+}
