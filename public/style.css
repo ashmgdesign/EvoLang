@@ -172,10 +172,11 @@ body, html {
     align-items: start;
     justify-content: end;
     padding-top:5px;
+    width:30px;
 }
 
 .label img {
-    max-width:30px;
+   width:30px;
 }
 
 .popular-keyboard, .newest-keyboard, .keyboard {
