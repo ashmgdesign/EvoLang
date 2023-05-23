@@ -6,10 +6,12 @@ class Site {
         this.definitions = {}
         this.popular;
         this.new;
+        this.criteria;
         this.ui();
         this.sio;
         this.initSockets();
         this.fetchData()
+        this.fetchCriteria();
         
         this.user = "Anon"
         this.username = "Anon"
@@ -37,6 +39,10 @@ class Site {
         this._definitionWrapper = document.querySelector('.def-inner-content');
         this._definitionsList = document.querySelector('.definitions-list');
         this._uploadOverlay = document.querySelector('.upload-overlay');
+        this._editBtn = document.querySelector('.edit');
+        this._critList = document.querySelector('.criteria-list');
+        this._critField = document.querySelector('.critField');
+        this._critOverlay = document.querySelector('.crit-overlay');
     }
 
     initSockets() {
@@ -50,10 +56,14 @@ class Site {
         return b[4] - a[4];
     }
 
+    popularSortCrit(a,b) {
+        return b[1] - a[1];
+    }
+
     fetchData() {
         fetch('/fetchKeys')
         .then(data => {
-        return data.json();
+            return data.json();
         })
         .then(keys => {
             keys.shift();
@@ -83,9 +93,37 @@ class Site {
         });
     }
 
-    sortDefinitions() {
 
+    fetchCriteria() {
+        fetch('/fetchCriteria')
+        .then(data => {
+            return data.json();
+        })
+        .then(criteria => {
+            criteria.shift();
+            criteria.sort(this.popularSortCrit);
+            this.criteria = criteria;
+            console.log(this.criteria)
+            this.populateCriteria();
+        });
     }
+
+    populateCriteria() {
+        for(let c of this.criteria) {
+            const critEl = document.createElement('div');
+            critEl.classList.add('crit-item');
+            critEl.setAttribute('data-id', c[2]);
+            critEl.innerHTML = c[0];
+
+            const upEl = document.createElement('div');
+            upEl.classList.add('crit-item-up');
+            upEl.innerHTML = '<div class="vote-icon"><a href="#" class="upvote"><img src="assets/upvote.svg"></a></div><div class="score">'+c[1]+'</div><div class="vote-icon"><a href="#" class="downvote"><img src="assets/downvote.svg"></a></div>';
+            upEl.setAttribute('data-id', c[2]);
+            critEl.prepend(upEl);
+            this._critList.appendChild(critEl);
+        }
+    }
+    
 
     createKeyboard(keys, container) {
         for(let key=0; key<keys.length; key++) {
@@ -120,9 +158,12 @@ class Site {
 
     bindEvents() {
         document.body.addEventListener("click", this.clicked.bind(this), true);
+        this._username.addEventListener("input", this.checkLogin.bind(this), true);
+        this._email.addEventListener("input", this.checkLogin.bind(this), true);
     }
 
     clicked(e) {
+        const $this = this;
         if(e.target.closest(".key")) {
             e.stopPropagation();
             if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
@@ -160,6 +201,9 @@ class Site {
             defEl.setAttribute('data-key', this.user);
             defEl.innerHTML = newDefText;
             this._definitionsList.appendChild(defEl);
+            setTimeout(function() {
+                $this._definitionsList.scrollTo(0, $this._definitionsList.scrollHeight);
+            }, 50)
             document.querySelector('.defnitionField').value = "";
             this.submitDefinition();
         } else if(e.target.closest('.def-item-up .upvote')) {
@@ -186,10 +230,50 @@ class Site {
             this._uploadOverlay.style.display = 'none';
         } else if(e.target.closest('.upload-btn')) {
             this._uploadOverlay.style.display = 'flex';
+        } else if(e.target.closest('.clear')) {
+            this.clearAll();
+            if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
+        } else if(e.target.closest('.crit-item-up .upvote')) {
+            e.stopPropagation();
+            
+            const id = e.target.closest('.crit-item-up').getAttribute('data-id');
+            console.log(id)
+            let score = (parseInt(this.criteria[id][1]) + 1);
+            this.criteria[id][1] = score;
+            e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
+            console.log(this.criteria)
+            this.upvoteCrit(id);
+        } else if(e.target.closest('.crit-item-up .downvote')) {
+            e.stopPropagation();
+            
+            const id = e.target.closest('.crit-item-up').getAttribute('data-id');
+            let score = (parseInt(this.criteria[id][1]) - 1) < 0 ? 0 : parseInt(this.criteria[id][1]) - 1;
+            this.criteria[id][1] = score;
+            console.log(this.criteria)
+            e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
+            
+            this.downvoteCrit(id);
+        } else if(e.target.closest('.critSubmit')) {
+            this.addCrit();
+        } else if(e.target.closest('.upload-crit-btn')) {
+            this._critOverlay.style.display = 'flex'
+        } else if(e.target.closest('.crit-overlay .close')) {
+            this._critOverlay.style.display = 'none'
         }
     }
 
-    
+    checkLogin() {
+        if(this._email.value == "" || this._username.value == "") {
+            this._usernameSubmit.classList.add('disabled');
+            return;
+        }
+        if(!this.validateEmail(this._email)) {
+            this._usernameSubmit.classList.add('disabled');
+            return;
+        }
+
+        this._usernameSubmit.classList.remove('disabled');
+    }
 
     closeModal() {
         if(this._username.value == "" || this._email.value == "") return;
@@ -289,6 +373,77 @@ class Site {
         
     }
 
+    upvoteCrit(key) {
+
+        const $this = this;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'crit':[key]}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        
+        fetch('/upvoteCrit', options).then((response) => {
+            console.log('success')
+        })
+
+    }
+
+    downvoteCrit(key) {
+
+        const $this = this;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'crit':[key]}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        
+        fetch('/downvoteCrit', options).then((response) => {
+            console.log('success')
+        })
+
+    }
+
+    addCrit() {
+
+        const $this = this;
+        const val = this._critField.value;
+        if(val == "") return;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'crit':[val, '0']}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+
+        const critEl = document.createElement('div');
+        // critEl.setAttribute('data-id', c[2]);
+        critEl.classList.add('crit-item');
+        critEl.innerHTML = val;
+
+        // const upEl = document.createElement('div');
+        // upEl.classList.add('crit-item-up');
+        // upEl.innerHTML = '<div class="vote-icon"></div><div class="score">'+0+'</div><div class="vote-icon"></div>';
+        // // upEl.setAttribute('data-id', c[2]);
+        // critEl.prepend(upEl);
+        this._critList.appendChild(critEl);
+
+        setTimeout(function() {
+            $this._critList.scrollTo(0, $this._critList.scrollHeight);
+        }, 50)
+        
+        fetch('/addCrit', options).then((response) => {
+            console.log('success')
+        });
+
+
+
+    }
+
 
     openEdit() {
         this._defOverlay.style.display = 'flex';
@@ -333,6 +488,7 @@ class Site {
 
         this._definitionWrapper.style.display = 'flex';
         this._definition.innerHTML = def;
+        this._editBtn.style.display = 'block';
         console.log(def)
         console.log(this.currentMsg);
         const $this = this;
@@ -345,12 +501,24 @@ class Site {
     unType(img, id) {
         this._definitionWrapper.style.display = 'none';
         this._definition.innerHTML = "";
+        this._editBtn.style.display = 'none';
         if(!this.currentMsg.length) return;
 
         this.currentMsg = this.currentMsg.slice(0,-1);
         this._inputField.removeChild(this._inputField.lastChild);
         console.log(this.currentMsg);
         this._inputField.scrollTo(0, this._inputField.scrollHeight);
+    }
+
+    clearAll() {
+        this._definitionWrapper.style.display = 'none';
+        this._definition.innerHTML = "";
+        this._editBtn.style.display = 'none';
+        if(!this.currentMsg.length) return;
+
+        this.currentMsg = [];
+        this._inputField.innerHTML = "";
+        this._inputField.scrollTo(0, 0);
     }
 
     sendMsg() {
@@ -371,6 +539,7 @@ class Site {
         this._inputField.innerHTML = "";
         this._definitionWrapper.style.display = 'none';
         this._definition.innerHTML = "";
+        this._editBtn.style.display = 'none';
     }
 
     submitDefinition() {

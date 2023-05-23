@@ -8,6 +8,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+const { v4: uuidv4 } = require('uuid');
+
+
 
 
 // Serve the static files from the public folder
@@ -27,6 +30,9 @@ const serviceAccountKeyFile = "./utopian-sky-386209-09364afcd939.json";
 const sheetId = '1G8e2yFInBiZUF3sS36y9lgEE3wVJ0SmAEh8oceVsirk'
 const tabName = 'Sheet1'
 const range = 'A:I'
+
+const tabName2 = 'c_guidelines'
+const range2 = 'A:C'
 
 // Listen for incoming connections from clients
 io.on('connection', (socket) => {
@@ -49,7 +55,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/fetchKeys', async (req, res) => {
-    let data = await getSheets();
+    let data = await getSheets(tabName, range);
+    console.log(data);
+    res.json(data)
+});
+
+app.get('/fetchCriteria', async (req, res) => {
+    let data = await getSheets(tabName2, range2);
     console.log(data);
     res.json(data)
 });
@@ -146,12 +158,64 @@ app.post('/downvoteDef', async (req, res) => {
   res.sendStatus(200);
 });
 
-async function getSheets() {
+app.post('/upvoteCrit', async (req, res) => {
+  console.log(req.body)
+  const inputValues = req.body.crit;
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName2}!${range2}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName2}!${range2}`,
+    resource: {values: values.map((r) => inputValues.includes(r[2]) ? [r[0], parseInt(r[1])+1, r[2]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+app.post('/downvoteCrit', async (req, res) => {
+  console.log(req.body)
+  const inputValues = req.body.crit;
+  const googleSheetClient = await _getGoogleSheetClient();
+  
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName2}!${range2}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName2}!${range2}`,
+    resource: {values: values.map((r) => inputValues.includes(r[2]) ? [r[0], (((parseInt(r[1])-1) < 0) ? 0 : (parseInt(r[1])-1)), r[2]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+
+app.post('/addCrit', async (req, res) => {
+  console.log(req.body)
+  let inputValues = req.body.crit;
+  inputValues[2] = uuidv4();
+  console.log(inputValues)
+  const googleSheetClient = await _getGoogleSheetClient();
+  
+
+  await googleSheetClient.spreadsheets.values.append({
+    spreadsheetId: sheetId,
+    range: `${tabName2}!${range2}`,
+    resource: {"majorDimension": "ROWS", 'values':[inputValues]},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+async function getSheets(_name, _range) {
   // Generating google sheet client
   const googleSheetClient = await _getGoogleSheetClient();
 
   // Reading Google Sheet from a specific range
-  return await _readGoogleSheet(googleSheetClient, sheetId, tabName, range);
+  return await _readGoogleSheet(googleSheetClient, sheetId, _name, _range);
 }
 
 async function _getGoogleSheetClient() {

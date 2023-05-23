@@ -15,7 +15,7 @@
                 <input class="username" type="text" placeholder="USERNAME">
                 <input class="email" type="email" placeholder="EMAIL">
                 <p>I will not email you - just used to differentiate users.</p>
-                <button class="usernameSubmit button-primary">Enter</button>
+                <button class="usernameSubmit button-primary button disabled">Enter</button>
             </div>
         </div>
 
@@ -31,6 +31,20 @@
                 </div>
                 <input class="defnitionField" type="text" placeholder="Add a new definition" maxlength="100">
                 <button class="definitionSubmit button-primary">Submit</button>
+            </div>
+        </div>
+
+        <div class="crit-overlay">
+            <div class="modal">
+                <div class="header">
+                    <div><h4>Criteria</h4></div>
+                    <div class="close">✕</div>
+                </div>
+                <div class="criteria-list">
+
+                </div>
+                <input class="critField" type="text" placeholder="Add new" maxlength="100">
+                <button class="critSubmit button-primary">Submit</button>
             </div>
         </div>
 
@@ -54,7 +68,8 @@
                     </ul>
                     <div class="input">
                         <div class="buttons">
-                            <button class="send button-primary">SEND</button>
+                            <button class="send button button-primary">SEND</button>
+                            <button class="clear button">CLEAR ALL</button>
                             <button class="backspace button">BACKSPACE</button>
                         </div>
                         <div class="input-field"></div>
@@ -62,19 +77,19 @@
                     </div>
                 </div>
 
-                <div class="inputs five columns">
+                <div class="inputs six columns">
 
                     <div class="keyboards">
 
                         <div class="popular-keyboard">
-                            <div class="label"><img src="assets/emoji_u2728.svg"></div>
+                            <div class="label"><img src="assets/1f4c8.svg"></div>
                             <div class="keyboard-inner">
                                 
                             </div>
                         </div>
 
                         <div class="newest-keyboard">
-                            <div class="label"><img src="assets/1f552.svg"></div>
+                            <div class="label"><img src="assets/emoji_u2728.svg"></div>
                             <div class="keyboard-inner">
                                 
                             </div>
@@ -93,20 +108,25 @@
                             <div class="def-inner">
                                 <div class="def-inner-content">
                                     <div class="definition"></div>
-                                    <button class="edit button">Change</button>
+                                    
                                 </div>
                             </div>
+                            <button class="edit button">Change</button>
                         </div>
 
                     </div>
 
                 </div>
 
-                <div class="one columns">
+                <!-- <div class="one columns"> -->
                     <div class="upload-wrapper">
                        <img class="upload-btn" src="assets/plus-submit_gram.svg">
                     </div>
-                </div>
+
+                    <div class="upload-crit-wrapper">
+                       <img class="upload-crit-btn" src="assets/plus-submit_gram.svg">
+                    </div>
+                <!-- </div> -->
 
             </div>
 
