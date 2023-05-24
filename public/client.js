@@ -7,6 +7,12 @@ class Site {
         this.popular;
         this.new;
         this.criteria;
+
+        this.tagArrays;
+
+        this.sortedArrays;
+
+
         this.ui();
         this.sio;
         this.initSockets();
@@ -67,26 +73,48 @@ class Site {
         })
         .then(keys => {
             keys.shift();
-            this.keys = keys;
-            for(let key=0; key<this.keys.length; key++) {
-                this.lookup[this.keys[key][3]] = {img: this.keys[key][0], row:key, score:this.keys[key][4]};
-                this.definitions[this.keys[key][3]] = {}
-                let defJson = JSON.parse(this.keys[key][2]);
-                let scoreJson = JSON.parse(this.keys[key][6]);
+
+            this.tagArrays = keys.slice();
+            this.sortedArrays = [this.tagArrays.shift()];
+            
+
+            while (this.tagArrays.length > 0) {
+                let maxCommonElements = -1;
+                let nextIndex = -1;
+
+                // Find the array with the most tags in common with the last sorted array
+                for (let i = 0; i < this.tagArrays.length; i++) {
+                    let numCommonElements = this.commonElements(JSON.parse(this.sortedArrays[this.sortedArrays.length - 1][9]), JSON.parse(this.tagArrays[i][9]));
+                    if (numCommonElements > maxCommonElements) {
+                        maxCommonElements = numCommonElements;
+                        nextIndex = i;
+                    }
+                }
+
+                this.sortedArrays.push(this.tagArrays.splice(nextIndex, 1)[0]);
+            }
+
+            // this.keys = keys;
+            this.keys = this.sortedArrays.slice(0,121);
+            for(let key=0; key<keys.length; key++) {
+                this.lookup[keys[key][3]] = {img: keys[key][0], row:key, score:keys[key][4]};
+                this.definitions[keys[key][3]] = {}
+                let defJson = JSON.parse(keys[key][2]);
+                let scoreJson = JSON.parse(keys[key][6]);
                 for(var i=0; i<Object.keys(defJson).length; i++) {
                     let name = Object.keys(defJson)[i];
-                    this.definitions[this.keys[key][3]][name] = {
+                    this.definitions[keys[key][3]][name] = {
                         text: defJson[name],
                         score: scoreJson[name] ? scoreJson[name] : 0
                     }
                 }
             }
-            console.log(this.definitions);
-            this.new = this.keys.slice().reverse();
-            this.new = this.new.slice(0,11); // get 10 newest;
-            this.popular = this.keys.slice();
+            let temp = keys.slice();
+            this.new = temp.reverse();
+            this.new = this.new.slice(0,11); // get 11 newest;
+            this.popular = keys.slice();
             this.popular.sort(this.popularSort);
-            this.popular = this.popular.slice(0,11); // get top 10;
+            this.popular = this.popular.slice(0,11); // get top 11;
             this.createKeyboard(this.popular, this._popularKeyboard);
             this.createKeyboard(this.new, this._newestKeyboard);
             this.createKeyboard(this.keys, this._keyboard);
@@ -103,7 +131,7 @@ class Site {
             criteria.shift();
             criteria.sort(this.popularSortCrit);
             this.criteria = criteria;
-            console.log(this.criteria)
+            // console.log(this.criteria)
             this.populateCriteria();
         });
     }
@@ -126,6 +154,7 @@ class Site {
     
 
     createKeyboard(keys, container) {
+        console.log(keys, keys.length);
         for(let key=0; key<keys.length; key++) {
             const k = document.createElement('div');
             k.classList.add('key');
@@ -135,10 +164,10 @@ class Site {
             // if(keys[key][2]) {
             //     def = JSON.stringify(JSON.parse(keys[key][2]));
             // }
-
+           
             for(var i=0; i<Object.keys(this.definitions[keys[key][3]]).length; i++) {
                 let name = Object.keys(this.definitions[keys[key][3]])[i];
-                console.log(this.definitions[keys[key][3]][name])
+                
                 if(this.definitions[keys[key][3]][name].score > score) {
                     def = this.definitions[keys[key][3]][name].text;
                     score = this.definitions[keys[key][3]][name].score;
@@ -176,12 +205,10 @@ class Site {
             this.type(img, id, def)
         } else if(e.target.closest(".send")) {
             e.stopPropagation();
-            console.log('here')
             this.sendMsg();
             if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
         } else if(e.target.closest(".backspace")) {
             e.stopPropagation();
-            console.log('back')
             this.unType();
             if(document.querySelector(".key.highlight")) document.querySelector(".key.highlight").classList.remove('highlight');
         } else if(e.target.closest(".usernameSubmit")) {
@@ -237,11 +264,11 @@ class Site {
             e.stopPropagation();
             
             const id = e.target.closest('.crit-item-up').getAttribute('data-id');
-            console.log(id)
+            // console.log(id)
             let score = (parseInt(this.criteria[id][1]) + 1);
             this.criteria[id][1] = score;
             e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
-            console.log(this.criteria)
+            // console.log(this.criteria)
             this.upvoteCrit(id);
         } else if(e.target.closest('.crit-item-up .downvote')) {
             e.stopPropagation();
@@ -249,7 +276,7 @@ class Site {
             const id = e.target.closest('.crit-item-up').getAttribute('data-id');
             let score = (parseInt(this.criteria[id][1]) - 1) < 0 ? 0 : parseInt(this.criteria[id][1]) - 1;
             this.criteria[id][1] = score;
-            console.log(this.criteria)
+            // console.log(this.criteria)
             e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
             
             this.downvoteCrit(id);
@@ -282,7 +309,7 @@ class Site {
 
         this.user = this._email.value;
         this.username = this._username.value;
-        console.log(this.user, this.username);
+        // console.log(this.user, this.username);
         this._overlay.style.display = 'none';
     }
 
@@ -440,8 +467,6 @@ class Site {
             console.log('success')
         });
 
-
-
     }
 
 
@@ -590,6 +615,12 @@ class Site {
         this._msgField.appendChild(msgEl);
         this._msgField.scrollTo(0, this._msgField.scrollHeight);
     }
+
+    commonElements(array1, array2) {
+        return array1.filter(element => array2.includes(element)).length;
+    }
+    
+  
 }
 
 new Site();

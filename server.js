@@ -29,7 +29,7 @@ const {google} = require('googleapis');
 const serviceAccountKeyFile = "./utopian-sky-386209-09364afcd939.json";
 const sheetId = '1G8e2yFInBiZUF3sS36y9lgEE3wVJ0SmAEh8oceVsirk'
 const tabName = 'Sheet1'
-const range = 'A:I'
+const range = 'A:J'
 
 const tabName2 = 'c_guidelines'
 const range2 = 'A:C'
