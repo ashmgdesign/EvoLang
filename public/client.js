@@ -18,6 +18,7 @@ class Site {
         this.initSockets();
         this.fetchData()
         this.fetchCriteria();
+       
         
         this.user = "Anon"
         this.username = "Anon"
@@ -118,6 +119,7 @@ class Site {
             this.createKeyboard(this.popular, this._popularKeyboard);
             this.createKeyboard(this.new, this._newestKeyboard);
             this.createKeyboard(this.keys, this._keyboard);
+            this.fetchHistory();
         });
     }
 
@@ -133,6 +135,24 @@ class Site {
             this.criteria = criteria;
             // console.log(this.criteria)
             this.populateCriteria();
+        });
+    }
+
+    fetchHistory() {
+        fetch('/fetchHistory')
+        .then(data => {
+            return data.json();
+        })
+        .then(history => {
+            console.log(history);
+            history.reverse();
+            for(let i=0; i<history.length; i++) {
+                let msg = {}
+                msg.msg = history[i][0]
+                msg.user = history[i][1];
+                console.log(msg.msg)
+                this.msgReceived(msg);
+            }
         });
     }
 

@@ -34,14 +34,64 @@ const range = 'A:J'
 const tabName2 = 'c_guidelines'
 const range2 = 'A:C'
 
+const tabName3 = 'c_history'
+const range3 = 'A:B';
+const range4 = 'A1:B50';
+
+async function addChat(msg, name) {
+
+  console.log('here');
+  
+  let inputValues = [msg, name].join('|~|');
+  console.log(inputValues);
+  const googleSheetClient = await _getGoogleSheetClient();
+  
+  await googleSheetClient.spreadsheets.batchUpdate({
+    spreadsheetId: sheetId,
+    resource: { 
+      requests: [
+        {
+         "insertRange": {
+            "range": {//Sheet1!A3
+              "sheetId": 2094104424,
+              "startRowIndex": 0,
+              "endRowIndex": 1,
+              "startColumnIndex": 0,
+              "endColumnIndex": 2,
+             },
+            "shiftDimension": "ROWS"
+          }
+        },
+        {
+            "pasteData": {
+            "data": inputValues,
+            "type": "PASTE_NORMAL",
+            "delimiter": "|~|",
+            "coordinate": {
+             "sheetId": 2094104424,
+             "rowIndex": 0,
+            }
+          }
+        }
+      ]
+    }
+  },(err,res)=>console.log(err ? err : res))
+
+};
+
+
 // Listen for incoming connections from clients
 io.on('connection', (socket) => {
     console.log('A user has connected');
+
+    console.log('here');
+   
 
     // Listen for incoming chat messages from clients
     socket.on('chat message', (msg) => {
         console.log(`Message: ${msg.msg}`);
         io.emit('chat message', msg); // Broadcast the message to all connected clients
+        addChat(msg.msg, msg.user);
     });
 
     // Listen for disconnections from clients
@@ -56,13 +106,16 @@ app.get('/', (req, res) => {
 
 app.get('/fetchKeys', async (req, res) => {
     let data = await getSheets(tabName, range);
-    console.log(data);
     res.json(data)
 });
 
 app.get('/fetchCriteria', async (req, res) => {
     let data = await getSheets(tabName2, range2);
-    console.log(data);
+    res.json(data)
+});
+
+app.get('/fetchHistory', async (req, res) => {
+    let data = await getSheets(tabName3, range4);
     res.json(data)
 });
 
@@ -84,7 +137,6 @@ app.post('/setData', async (req, res) => {
 });
 
 app.post('/setDef', async (req, res) => {
-  console.log(req.body)
 
   const inputValues = req.body.keys; // This is a sample input value.
   const googleSheetClient = await _getGoogleSheetClient();
@@ -209,6 +261,7 @@ app.post('/addCrit', async (req, res) => {
   });
   res.sendStatus(200);
 });
+
 
 async function getSheets(_name, _range) {
   // Generating google sheet client
