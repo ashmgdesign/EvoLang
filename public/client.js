@@ -134,7 +134,9 @@ class Site {
             criteria.sort(this.popularSortCrit);
             this.criteria = criteria;
             // console.log(this.criteria)
-            this.populateCriteria();
+            this.populateCriteria(this.criteria.slice(0,10));
+            this._critList.innerHTML += '<h5 style="background:#f0f0f0; margin-top:10px; padding:10px">Archive</h5>';
+            this.populateCriteria(this.criteria.slice(11,this.criteria.length));
         });
     }
 
@@ -156,8 +158,8 @@ class Site {
         });
     }
 
-    populateCriteria() {
-        for(let c of this.criteria) {
+    populateCriteria(crits) {
+        for(let c of crits) {
             const critEl = document.createElement('div');
             critEl.classList.add('crit-item');
             critEl.setAttribute('data-id', c[2]);
@@ -459,6 +461,7 @@ class Site {
         const $this = this;
         const val = this._critField.value;
         if(val == "") return;
+        this._critField.value = "";
         const options = {
           method: 'POST',
           body: JSON.stringify({'crit':[val, '0']}),
