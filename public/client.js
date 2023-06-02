@@ -135,7 +135,7 @@ class Site {
             this.criteria = criteria;
             // console.log(this.criteria)
             this.populateCriteria(this.criteria.slice(0,10));
-            this._critList.innerHTML += '<h5 style="background:#f0f0f0; margin-top:10px; padding:10px">Archive</h5>';
+            this._critList.innerHTML += '<h5 style="background:#f0f0f0; margin-top:10px; padding:10px">Archive / New</h5>';
             this.populateCriteria(this.criteria.slice(11,this.criteria.length));
         });
     }
