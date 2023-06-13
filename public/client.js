@@ -33,6 +33,7 @@ class Site {
         this._keyboard = document.querySelector('.keyboard .keyboard-inner');
         this._popularKeyboard = document.querySelector('.popular-keyboard .keyboard-inner');
         this._newestKeyboard = document.querySelector('.newest-keyboard .keyboard-inner');
+        this._archiveKeyboard = document.querySelector('.archive-keyboard .keyboard-inner');
         this._inputField = document.querySelector('.input-field');
         this._sendBtn = document.querySelector('.send');
         this._backBtn = document.querySelector('.backspace');
@@ -81,6 +82,10 @@ class Site {
 
             this.tagArrays = all.slice(0,121);
             this.sortedArrays = [this.tagArrays.shift()];
+
+
+            this.archive = all.slice(121,all.length);
+            // this.archive = all.slice(0,121);
             
 
             while (this.tagArrays.length > 0) {
@@ -123,6 +128,7 @@ class Site {
             this.createKeyboard(this.popular, this._popularKeyboard);
             this.createKeyboard(this.new, this._newestKeyboard);
             this.createKeyboard(this.keys, this._keyboard);
+            this.createKeyboard(this.archive, this._archiveKeyboard);
             this.fetchHistory();
         });
     }
