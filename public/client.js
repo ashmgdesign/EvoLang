@@ -570,6 +570,7 @@ class Site {
     }
 
     sendMsg() {
+        if(!this.currentMsg.length) return;
         const options = {
           method: 'POST',
           body: JSON.stringify({'keys':this.currentMsg}),
