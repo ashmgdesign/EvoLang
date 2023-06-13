@@ -131,12 +131,13 @@ class Site {
         })
         .then(criteria => {
             criteria.shift();
+            this.criteria = criteria.slice();
             criteria.sort(this.popularSortCrit);
-            this.criteria = criteria;
+            // this.criteria = criteria;
             // console.log(this.criteria)
-            this.populateCriteria(this.criteria.slice(0,10));
+            this.populateCriteria(criteria.slice(0,10));
             this._critList.innerHTML += '<h5 style="background:#f0f0f0; margin-top:10px; padding:10px">Archive / New</h5>';
-            this.populateCriteria(this.criteria.slice(11,this.criteria.length));
+            this.populateCriteria(criteria.slice(10,criteria.length));
         });
     }
 
@@ -286,9 +287,16 @@ class Site {
             e.stopPropagation();
             
             const id = e.target.closest('.crit-item-up').getAttribute('data-id');
+            // console.log(this.criteria);
             // console.log(id)
-            let score = (parseInt(this.criteria[id][1]) + 1);
-            this.criteria[id][1] = score;
+            // console.log(this.criteria[id]);
+
+            let crit = this.criteria.find(item => item[2] == id)
+
+            // console.log(crit);
+
+            let score = (parseInt(crit[1]) + 1);
+            crit[1] = score;
             e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
             // console.log(this.criteria)
             this.upvoteCrit(id);
@@ -296,8 +304,9 @@ class Site {
             e.stopPropagation();
             
             const id = e.target.closest('.crit-item-up').getAttribute('data-id');
-            let score = (parseInt(this.criteria[id][1]) - 1) < 0 ? 0 : parseInt(this.criteria[id][1]) - 1;
-            this.criteria[id][1] = score;
+            let crit = this.criteria.find(item => item[2] == id)
+            let score = (parseInt(crit[1]) - 1) < 0 ? 0 : parseInt(crit[1]) - 1;
+            crit[1] = score;
             // console.log(this.criteria)
             e.target.closest('.crit-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
             
