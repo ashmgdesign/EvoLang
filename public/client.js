@@ -75,7 +75,11 @@ class Site {
         .then(keys => {
             keys.shift();
 
-            this.tagArrays = keys.slice();
+
+            let all = keys.slice();
+            all.sort(this.popularSort);
+
+            this.tagArrays = all.slice(0,121);
             this.sortedArrays = [this.tagArrays.shift()];
             
 
