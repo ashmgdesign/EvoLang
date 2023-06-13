@@ -140,13 +140,14 @@ class Site {
             return data.json();
         })
         .then(criteria => {
+            console.log(criteria)
             criteria.shift();
             this.criteria = criteria.slice();
             criteria.sort(this.popularSortCrit);
             // this.criteria = criteria;
             // console.log(this.criteria)
             this.populateCriteria(criteria.slice(0,10));
-            this._critList.innerHTML += '<h5 style="background:#f0f0f0; margin-top:10px; padding:10px">Archive / New</h5>';
+            this._critList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
             this.populateCriteria(criteria.slice(10,criteria.length));
         });
     }
@@ -174,7 +175,9 @@ class Site {
             const critEl = document.createElement('div');
             critEl.classList.add('crit-item');
             critEl.setAttribute('data-id', c[2]);
-            critEl.innerHTML = c[0];
+            let content = c[0].replace(/\n/g, '<br>');
+
+            critEl.innerHTML = content;
 
             const upEl = document.createElement('div');
             upEl.classList.add('crit-item-up');
