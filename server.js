@@ -34,6 +34,9 @@ const range = 'A:J'
 const tabName2 = 'c_guidelines'
 const range2 = 'A:C'
 
+const tabName5 = 'c_stylesheet'
+const range5 = 'A:C'
+
 const tabName3 = 'c_history'
 const range3 = 'A:B';
 const range4 = 'A1:B50';
@@ -113,6 +116,12 @@ app.get('/fetchCriteria', async (req, res) => {
     let data = await getSheets(tabName2, range2);
     res.json(data)
 });
+
+app.get('/fetchStyle', async (req, res) => {
+    let data = await getSheets(tabName5, range5);
+    res.json(data)
+});
+
 
 app.get('/fetchHistory', async (req, res) => {
     let data = await getSheets(tabName3, range4);
@@ -244,6 +253,40 @@ app.post('/downvoteCrit', async (req, res) => {
   res.sendStatus(200);
 });
 
+app.post('/upvoteStyle', async (req, res) => {
+  console.log(req.body)
+  const inputValues = req.body.style;
+  const googleSheetClient = await _getGoogleSheetClient();
+
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName5}!${range5}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName5}!${range5}`,
+    resource: {values: values.map((r) => inputValues.includes(r[2]) ? [r[0], parseInt(r[1])+1, r[2]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+app.post('/downvoteStyle', async (req, res) => {
+  console.log(req.body)
+  const inputValues = req.body.style;
+  const googleSheetClient = await _getGoogleSheetClient();
+  
+  const { data: { values }} = await googleSheetClient.spreadsheets.values.get({ spreadsheetId: sheetId,
+    range: `${tabName5}!${range5}` });
+
+  await googleSheetClient.spreadsheets.values.update({
+    spreadsheetId: sheetId,
+    range: `${tabName5}!${range5}`,
+    resource: {values: values.map((r) => inputValues.includes(r[2]) ? [r[0], (((parseInt(r[1])-1) < 0) ? 0 : (parseInt(r[1])-1)), r[2]] : r)},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
 
 app.post('/addCrit', async (req, res) => {
   console.log(req.body)
@@ -256,6 +299,23 @@ app.post('/addCrit', async (req, res) => {
   await googleSheetClient.spreadsheets.values.append({
     spreadsheetId: sheetId,
     range: `${tabName2}!${range2}`,
+    resource: {"majorDimension": "ROWS", 'values':[inputValues]},
+    valueInputOption: "USER_ENTERED",
+  });
+  res.sendStatus(200);
+});
+
+app.post('/addStyle', async (req, res) => {
+  console.log(req.body)
+  let inputValues = req.body.style;
+  inputValues[2] = uuidv4();
+  console.log(inputValues)
+  const googleSheetClient = await _getGoogleSheetClient();
+  
+
+  await googleSheetClient.spreadsheets.values.append({
+    spreadsheetId: sheetId,
+    range: `${tabName5}!${range5}`,
     resource: {"majorDimension": "ROWS", 'values':[inputValues]},
     valueInputOption: "USER_ENTERED",
   });

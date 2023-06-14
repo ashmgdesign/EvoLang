@@ -18,6 +18,7 @@ class Site {
         this.initSockets();
         this.fetchData()
         this.fetchCriteria();
+        this.fetchStyle();
        
         
         this.user = "Anon"
@@ -51,6 +52,10 @@ class Site {
         this._critList = document.querySelector('.criteria-list');
         this._critField = document.querySelector('.critField');
         this._critOverlay = document.querySelector('.crit-overlay');
+
+        this._styleList = document.querySelector('.style-list');
+        this._styleField = document.querySelector('.styleField');
+        this._styleOverlay = document.querySelector('.style-overlay');
     }
 
     initSockets() {
@@ -152,6 +157,24 @@ class Site {
         });
     }
 
+    fetchStyle() {
+        fetch('/fetchStyle')
+        .then(data => {
+            return data.json();
+        })
+        .then(style => {
+            console.log(style)
+            style.shift();
+            this.style = style.slice();
+            style.sort(this.popularSortCrit);
+            // this.style = style;
+            // console.log(this.style)
+            this.populateStyle(style.slice(0,10));
+            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
+            this.populateStyle(style.slice(10,style.length));
+        });
+    }
+
     fetchHistory() {
         fetch('/fetchHistory')
         .then(data => {
@@ -185,6 +208,24 @@ class Site {
             upEl.setAttribute('data-id', c[2]);
             critEl.prepend(upEl);
             this._critList.appendChild(critEl);
+        }
+    }
+
+    populateStyle(styles) {
+        for(let s of styles) {
+            const styleEl = document.createElement('div');
+            styleEl.classList.add('style-item');
+            styleEl.setAttribute('data-id', s[2]);
+            let content = s[0].replace(/\n/g, '<br>');
+
+            styleEl.innerHTML = content;
+
+            const upEl = document.createElement('div');
+            upEl.classList.add('style-item-up');
+            upEl.innerHTML = '<div class="vote-icon"><a href="#" class="upvote"><img src="assets/upvote.svg"></a></div><div class="score">'+s[1]+'</div><div class="vote-icon"><a href="#" class="downvote"><img src="assets/downvote.svg"></a></div>';
+            upEl.setAttribute('data-id', s[2]);
+            styleEl.prepend(upEl);
+            this._styleList.appendChild(styleEl);
         }
     }
     
@@ -330,6 +371,28 @@ class Site {
             this._critOverlay.style.display = 'flex'
         } else if(e.target.closest('.crit-overlay .close')) {
             this._critOverlay.style.display = 'none'
+        } else if(e.target.closest('.upload-style-btn')) {
+            this._styleOverlay.style.display = 'flex'
+        } else if(e.target.closest('.style-overlay .close')) {
+            this._styleOverlay.style.display = 'none'
+        } else if(e.target.closest('.style-item-up .upvote')) {
+            e.stopPropagation();
+            const id = e.target.closest('.style-item-up').getAttribute('data-id');
+            let style = this.style.find(item => item[2] == id)
+            let score = (parseInt(style[1]) + 1);
+            style[1] = score;
+            e.target.closest('.style-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
+            this.upvoteStyle(id);
+        } else if(e.target.closest('.style-item-up .downvote')) {
+            e.stopPropagation();
+            const id = e.target.closest('.style-item-up').getAttribute('data-id');
+            let style = this.style.find(item => item[2] == id)
+            let score = (parseInt(style[1]) - 1) < 0 ? 0 : parseInt(style[1]) - 1;
+            style[1] = score;
+            e.target.closest('.style-item-up').innerHTML = '<div class="vote-icon"></div><div class="score">'+score+'</div><div class="vote-icon"></div>';
+            this.downvoteStyle(id);
+        }  else if(e.target.closest('.styleSubmit')) {
+            this.addStyle();
         }
     }
 
@@ -478,6 +541,40 @@ class Site {
 
     }
 
+    upvoteStyle(key) {
+
+        const $this = this;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'style':[key]}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        
+        fetch('/upvoteStyle', options).then((response) => {
+            console.log('success')
+        })
+
+    }
+
+    downvoteStyle(key) {
+
+        const $this = this;
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'style':[key]}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+        
+        fetch('/downvoteStyle', options).then((response) => {
+            console.log('success')
+        })
+
+    }
+
     addCrit() {
 
         const $this = this;
@@ -493,15 +590,9 @@ class Site {
         };
 
         const critEl = document.createElement('div');
-        // critEl.setAttribute('data-id', c[2]);
         critEl.classList.add('crit-item');
         critEl.innerHTML = val;
 
-        // const upEl = document.createElement('div');
-        // upEl.classList.add('crit-item-up');
-        // upEl.innerHTML = '<div class="vote-icon"></div><div class="score">'+0+'</div><div class="vote-icon"></div>';
-        // // upEl.setAttribute('data-id', c[2]);
-        // critEl.prepend(upEl);
         this._critList.appendChild(critEl);
 
         setTimeout(function() {
@@ -509,6 +600,36 @@ class Site {
         }, 50)
         
         fetch('/addCrit', options).then((response) => {
+            console.log('success')
+        });
+
+    }
+
+    addStyle() {
+
+        const $this = this;
+        const val = this._styleField.value;
+        if(val == "") return;
+        this._styleField.value = "";
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({'style':[val, '0']}),
+          headers: {
+            'content-type': 'application/json',
+          },
+        };
+
+        const styleEl = document.createElement('div');
+        styleEl.classList.add('style-item');
+        styleEl.innerHTML = val;
+
+        this._styleList.appendChild(styleEl);
+
+        setTimeout(function() {
+            $this._styleList.scrollTo(0, $this._styleList.scrollHeight);
+        }, 50)
+        
+        fetch('/addStyle', options).then((response) => {
             console.log('success')
         });
 
