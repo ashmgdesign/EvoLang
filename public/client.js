@@ -126,10 +126,10 @@ class Site {
             }
             let temp = keys.slice();
             this.new = temp.reverse();
-            this.new = this.new.slice(0,11); // get 11 newest;
+            this.new = this.new.slice(0,33); // get 11 newest;
             this.popular = keys.slice();
             this.popular.sort(this.popularSort);
-            this.popular = this.popular.slice(0,11); // get top 11;
+            this.popular = this.popular.slice(0,33); // get top 11;
             this.createKeyboard(this.popular, this._popularKeyboard);
             this.createKeyboard(this.new, this._newestKeyboard);
             this.createKeyboard(this.keys, this._keyboard);
@@ -151,6 +151,7 @@ class Site {
             criteria.sort(this.popularSortCrit);
             // this.criteria = criteria;
             // console.log(this.criteria)
+            this._critList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Best XXX</h5><p style="margin-bottom:0"><b>top 10 upvoted</b></p></div>';
             this.populateCriteria(criteria.slice(0,10));
             this._critList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Criteria other than the top 10 upvoted - check to have your say by voting on new and old criteria</b></p></div>';
             this.populateCriteria(criteria.slice(10,criteria.length));
@@ -169,6 +170,7 @@ class Site {
             style.sort(this.popularSortCrit);
             // this.style = style;
             // console.log(this.style)
+            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Best xxxx</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
             this.populateStyle(style.slice(0,10));
             this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
             this.populateStyle(style.slice(10,style.length));
