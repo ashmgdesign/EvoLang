@@ -152,7 +152,7 @@ class Site {
             // this.criteria = criteria;
             // console.log(this.criteria)
             this.populateCriteria(criteria.slice(0,10));
-            this._critList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
+            this._critList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Criteria other than the top 10 upvoted - check to have your say by voting on new and old criteria</b></p></div>';
             this.populateCriteria(criteria.slice(10,criteria.length));
         });
     }
