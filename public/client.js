@@ -170,9 +170,9 @@ class Site {
             style.sort(this.popularSortCrit);
             // this.style = style;
             // console.log(this.style)
-            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Best xxxx</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
+            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Fluid Style Criteria</h5><p style="margin-bottom:0"><b>Top 10 highest voted criteria form the official Fluid Submission Style Guidelines</b></p></div>';
             this.populateStyle(style.slice(0,10));
-            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Some text here</b></p></div>';
+            this._styleList.innerHTML += '<div style="background:#f0f0f0; margin-top:10px; padding:10px; margin-bottom:5px;"><h5>Archive / New</h5><p style="margin-bottom:0"><b>Criteria other than the top 10 upvoted - check to have your say by voting on new and old criteria</b></p></div>';
             this.populateStyle(style.slice(10,style.length));
         });
     }
