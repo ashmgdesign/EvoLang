@@ -807,10 +807,21 @@ class Site {
     }
 
     //method to show definitions, added to the class
+    // GPTITERATION2EDIT1 - log issues to console
 
     showDefinition(event) {
+        console.log('Hover event triggered');
         const keyElement = event.target.closest('.key');
+        if (!keyElement) {
+            console.log('Key element not found');
+            return;
+        }
         const definition = keyElement.getAttribute('data-definition');
+        if (!definition) {
+            console.log('Definition attribute missing');
+            return;
+        }
+        console.log('Definition:', definition);
         keyElement.setAttribute('title', definition); // Simplest way using native tooltips
     }
 
