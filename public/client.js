@@ -268,6 +268,9 @@ class Site {
         document.body.addEventListener("click", this.clicked.bind(this), true);
         this._username.addEventListener("input", this.checkLogin.bind(this), true);
         this._email.addEventListener("input", this.checkLogin.bind(this), true);
+        // New GPT addition GPTITERATION1EDIT2 (edit 2 is before edit 1, later down)
+        // just calling new method "bindHoverEvents" within existing bindEvents method
+        this.bindHoverEvents();
     }
 
     clicked(e) {
@@ -788,7 +791,36 @@ class Site {
     commonElements(array1, array2) {
         return array1.filter(element => array2.includes(element)).length;
     }
-    
+
+    // GPTITERATION1EDIT1
+
+    // ... rest of your existing methods ...
+
+    // Add this new method for hover event binding - added to the class "Site" (the whole big class)
+
+    bindHoverEvents() {
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            key.addEventListener('mouseover', this.showDefinition.bind(this));
+            key.addEventListener('mouseout', this.hideDefinition.bind(this));
+        });
+    }
+
+    //method to show definitions, added to the class
+
+    showDefinition(event) {
+        const keyElement = event.target.closest('.key');
+        const definition = keyElement.getAttribute('data-definition');
+        keyElement.setAttribute('title', definition); // Simplest way using native tooltips
+    }
+
+    hideDefinition(event) {
+        // This method can be left empty if you don't need any actions on mouseout
+    }
+
+    // ... rest of your existing methods ...
+
+
   
 }
 
