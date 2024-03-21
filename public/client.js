@@ -680,7 +680,9 @@ class Site {
 
     type(img, id, def) {
         let new_el = img.cloneNode(true);
-        new_el.setAttribute("data-definition");
+        new_el.setAttribute("data-definition", def);
+        new_el.addEventListener('mouseover', (event) => this.showDefinition(event, 'img'));
+
         this._inputField.appendChild(new_el);
         this.currentMsg.push(id);
 
@@ -803,17 +805,17 @@ class Site {
     bindHoverEvents() {
         const keys = document.querySelectorAll('.key');
         keys.forEach(key => {
-            key.addEventListener('mouseover', this.showDefinition.bind(this));
-            key.addEventListener('mouseout', this.hideDefinition.bind(this));
+            key.addEventListener('mouseover', (event) => this.showDefinition(event, '.key'));
+            key.addEventListener('mouseout', (event) => this.hideDefinition(event));
         });
     }
 
     //method to show definitions, added to the class
     // GPTITERATION2EDIT1 - log issues to console
 
-    showDefinition(event) {
+    showDefinition(event, selector) {
         console.log('Hover event triggered');
-        const keyElement = event.target.closest('.key');
+        const keyElement = event.target.closest(selector);
         if (!keyElement) {
             console.log('Key element not found');
             return;
