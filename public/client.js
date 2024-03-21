@@ -784,7 +784,22 @@ class Site {
             const k = document.createElement('div');
             k.classList.add('msg-key');
             const img = document.createElement('img');
+
+            let def = null
+            let score = 0;
+            for(var i=0; i<Object.keys(this.definitions[key]).length; i++) {
+                let name = Object.keys(this.definitions[key])[i];
+                
+                if(this.definitions[key][name].score > score) {
+                    def = this.definitions[key][name].text;
+                    score = this.definitions[key][name].score;
+                }
+            }
+
             img.setAttribute('src', '/images/'+this.lookup[key].img);
+            img.setAttribute('data-definition', def);
+            img.addEventListener('mouseover', (event) => this.showDefinition(event, 'img'));
+
             k.appendChild(img);
             msgEl.appendChild(k);
         }

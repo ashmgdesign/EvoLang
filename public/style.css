@@ -272,7 +272,7 @@ body, html {
     transition: all 0.3s;
 }
 .keyboard-inner .key:hover, .input .input-field img:hover, .message-list .msg .msg-key:hover {
-    transform: scale(1.2);
+    transform: scale(3);
 }
 
 .keyboard-inner .key img {
