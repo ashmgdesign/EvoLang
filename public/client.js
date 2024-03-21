@@ -27,7 +27,7 @@ class Site {
         this.currentDefs;
         this.currentId;
 
-        this.bindEvents();
+        
     }
 
     ui() {
@@ -135,6 +135,7 @@ class Site {
             this.createKeyboard(this.keys, this._keyboard);
             this.createKeyboard(this.archive, this._archiveKeyboard);
             this.fetchHistory();
+            this.bindEvents();
         });
     }
 
@@ -679,6 +680,7 @@ class Site {
 
     type(img, id, def) {
         let new_el = img.cloneNode(true);
+        new_el.setAttribute("data-definition");
         this._inputField.appendChild(new_el);
         this.currentMsg.push(id);
 
@@ -822,7 +824,10 @@ class Site {
             return;
         }
         console.log('Definition:', definition);
-        keyElement.setAttribute('title', definition); // Simplest way using native tooltips
+        // keyElement.setAttribute('title', definition); // Simplest way using native tooltips
+        tippy(keyElement, {
+            content: definition,
+        });
     }
 
     hideDefinition(event) {
