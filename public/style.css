@@ -272,7 +272,7 @@ body, html {
     transition: all 0.3s;
 }
 .keyboard-inner .key:hover, .input .input-field img:hover, .message-list .msg .msg-key:hover {
-    transform: scale(3);
+    /* transform: scale(3); */
 }
 .input-field:hover {
     overflow-y: unset; /* Change overflow to visible on hover */

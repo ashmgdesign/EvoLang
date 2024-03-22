@@ -843,7 +843,8 @@ class Site {
         console.log('Definition:', definition);
         // keyElement.setAttribute('title', definition); // Simplest way using native tooltips
         tippy(keyElement, {
-            content: definition,
+            allowHTML: true,
+            content: `<p>${definition}</p><div style="text-align:center"><img width="150px" height="auto" src="${keyElement.getAttribute("src") ?? keyElement.querySelector("img").getAttribute("src")}" /></div>`,
         });
     }
 
